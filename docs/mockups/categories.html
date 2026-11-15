@@ -42,6 +42,7 @@ body:before{display:block;position:fixed;inset:0;width:min(1300px,calc(100% - 32
 @media(max-width:1332px){body:before{width:min(1300px,100%)}.app{margin:0 auto}.sidebar{left:max(16px,calc((100vw - 1300px)/2 + 16px))}}
 @media(max-width:700px){.header h1{font-size:26px}.category-head{padding:20px}.sub-row{padding:14px 20px}.category{margin-bottom:12px}}
 .section-heading{align-items:center;gap:20px}.section-count{margin-left:0;line-height:1}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.category-column{display:grid;gap:12px;min-width:0}.category{display:block;margin:0}.section{margin-bottom:38px}.section:last-child{margin-bottom:0}@media(max-width:850px){.grid{grid-template-columns:1fr}.category-column:empty{display:none}}
 </style>
 </head>
 <body><div class="app">
@@ -67,7 +68,7 @@ let categories=initial.map(c=>({...c})), deleting=null;
 const $=s=>document.querySelector(s);const escapeHtml=s=>s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const recurrence=c=>c.regular?'<span class="recurring" title="Регулярная категория" aria-label="Регулярная категория">↻</span>':'';
 function row(c,sub=false){return `<div class="${sub?'sub-row':'category-head'}"><span class="icon" style="background:${c.color}" aria-hidden="true">${c.emoji}</span><span class="name">${escapeHtml(c.name)}${recurrence(c)}</span><div class="actions"><button class="action menu-button" type="button" aria-label="Действия: ${escapeHtml(c.name)}" title="Действия">···</button></div></div>`}
-function render(){for(const type of ['expense','income']){const roots=categories.filter(c=>c.type===type&&!c.parent);$('#'+type+'-count').textContent=roots.length;$('#'+type).innerHTML=roots.map(c=>{const children=categories.filter(x=>x.parent===c.id);return `<article class="category">${row(c)}${children.length?`<div class="sub-list">${children.map(x=>row(x,true)).join('')}</div>`:''}</article>`}).join('')||'<div class="empty">Категорий пока нет</div>'}}
+function render(){for(const type of ['expense','income']){const roots=categories.filter(c=>c.type===type&&!c.parent);$('#'+type+'-count').textContent=roots.length;const cards=roots.map(c=>{const children=categories.filter(x=>x.parent===c.id);return `<article class="category">${row(c)}${children.length?`<div class="sub-list">${children.map(x=>row(x,true)).join('')}</div>`:''}</article>`});$('#'+type).innerHTML=cards.length?[0,1].map(col=>`<div class="category-column">${cards.filter((_,i)=>i%2===col).join('')}</div>`).join(''):'<div class="empty">Категорий пока нет</div>'}}
 document.addEventListener('click',e=>{const del=e.target.closest('[data-delete]'),close=e.target.closest('[data-close]');if(close)$('#'+close.dataset.close).close();if(del){deleting=Number(del.dataset.delete);const c=categories.find(x=>x.id===deleting),hasChildren=categories.some(x=>x.parent===deleting);$('#confirm-text').textContent=hasChildren?'Сначала удалите подкатегории этой категории.':c.used?'Эта категория используется в транзакциях, поэтому удалить её нельзя.':`Категория «${c.name}» будет удалена.`;$('#confirm-delete').hidden=hasChildren||c.used;$('#confirmation').showModal()}});
 $('#confirm-delete').onclick=()=>{categories=categories.filter(c=>c.id!==deleting);$('#confirmation').close();render()};
 render();
