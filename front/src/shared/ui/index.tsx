@@ -85,7 +85,12 @@ type Option = { value: string; label: string; disabled?: boolean };
 function usePopupIndicator() {
   return useCallback((popup: HTMLDivElement | null) => {
     if (!popup) return;
+    let disabledHover = false;
     const update = () => {
+      if (disabledHover) {
+        popup.removeAttribute("data-indicator-ready");
+        return;
+      }
       const active =
         popup.querySelector<HTMLElement>(
           ".ui-popup-item[data-highlighted]:not([data-disabled])",
@@ -112,6 +117,21 @@ function usePopupIndicator() {
       );
       popup.setAttribute("data-indicator-ready", "");
     };
+    const onPointerOver = (event: PointerEvent) => {
+      const target =
+        event.target instanceof Element
+          ? event.target.closest(".ui-popup-item")
+          : null;
+      disabledHover = Boolean(target?.hasAttribute("data-disabled"));
+      update();
+    };
+    const onPointerLeave = () => {
+      disabledHover = false;
+      update();
+    };
+    popup.setAttribute("data-indicator-managed", "");
+    popup.addEventListener("pointerover", onPointerOver);
+    popup.addEventListener("pointerleave", onPointerLeave);
     const observer = new MutationObserver(update);
     observer.observe(popup, {
       subtree: true,
@@ -131,6 +151,9 @@ function usePopupIndicator() {
       .forEach((item) => resizeObserver?.observe(item));
     update();
     return () => {
+      popup.removeEventListener("pointerover", onPointerOver);
+      popup.removeEventListener("pointerleave", onPointerLeave);
+      popup.removeAttribute("data-indicator-managed");
       observer.disconnect();
       resizeObserver?.disconnect();
     };

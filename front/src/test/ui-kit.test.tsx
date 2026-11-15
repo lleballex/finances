@@ -71,6 +71,25 @@ test("плашка списка следует за активным пункт�
   );
 });
 
+test("плашка скрывается при наведении на недоступный пункт", async () => {
+  render(<Home />);
+  const user = userEvent.setup();
+  await user.click(
+    screen.getByRole("button", { name: "Действия с категорией" }),
+  );
+  const menu = screen.getByRole("menu", { name: "Действия с категорией" });
+  await user.hover(within(menu).getByRole("menuitem", { name: "Изменить" }));
+  await waitFor(() =>
+    expect(menu.hasAttribute("data-indicator-ready")).toBe(true),
+  );
+  await user.hover(
+    within(menu).getByRole("menuitem", { name: "Недоступное действие" }),
+  );
+  await waitFor(() =>
+    expect(menu.hasAttribute("data-indicator-ready")).toBe(false),
+  );
+});
+
 test("диалог закрывается отменой и возвращает фокус", async () => {
   render(<Home />);
   const user = userEvent.setup();
