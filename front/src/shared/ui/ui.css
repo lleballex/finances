@@ -172,7 +172,7 @@
 .ui-popup {
   min-width: 200px;
   padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 0;
   border-radius: 20px;
   background: linear-gradient(
     135deg,
@@ -181,10 +181,7 @@
   );
   backdrop-filter: blur(5px) saturate(150%);
   color: #171717;
-  box-shadow:
-    0 12px 28px rgba(23, 23, 23, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.85),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 28px rgba(23, 23, 23, 0.14);
   transform-origin: var(--transform-origin);
   transition:
     opacity 0.2s ease,
@@ -205,10 +202,20 @@
   font-weight: 600;
   cursor: pointer;
   outline: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 .ui-popup-item[data-highlighted],
-.ui-popup-item:hover {
-  background: rgba(255, 255, 255, 0.55);
+.ui-popup-item:hover:not([data-disabled]),
+.ui-popup-item[data-selected] {
+  background: rgba(107, 109, 114, 0.28);
+  color: #171717;
+}
+.ui-popup-item[data-selected]::after {
+  content: "✓" / "";
+  margin-left: auto;
+  padding-left: 12px;
 }
 .ui-popup-item[data-disabled] {
   opacity: 0.45;
