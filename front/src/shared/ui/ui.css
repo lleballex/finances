@@ -176,10 +176,10 @@
   border-radius: 20px;
   background: linear-gradient(
     135deg,
-    rgba(255, 255, 255, 0.64),
-    rgba(250, 250, 248, 0.46)
+    rgba(255, 255, 255, 0.28),
+    rgba(250, 250, 248, 0.18)
   );
-  backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(5px) saturate(150%);
   color: #171717;
   box-shadow:
     0 12px 28px rgba(23, 23, 23, 0.14),
@@ -233,19 +233,11 @@
   max-height: calc(100vh - 32px);
   overflow: auto;
   padding: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.7);
+  border: 0;
   border-radius: 30px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.78),
-    rgba(250, 250, 248, 0.64)
-  );
-  backdrop-filter: blur(24px) saturate(150%);
+  background: #fafaf8;
   color: #171717;
-  box-shadow:
-    0 12px 40px rgba(23, 23, 23, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  box-shadow: 0 12px 40px rgba(23, 23, 23, 0.16);
   transition:
     opacity 0.22s ease,
     scale 0.22s ease;
@@ -268,7 +260,7 @@
 }
 .ui-dialog-description {
   margin-top: 12px;
-  color: #171717;
+  color: #6b6d72;
   font-size: 15px;
   line-height: 1.6;
 }
@@ -280,8 +272,7 @@
   margin-top: 28px;
 }
 @supports not (backdrop-filter: blur(1px)) {
-  .ui-popup,
-  .ui-dialog {
+  .ui-popup {
     background: #fafaf8;
   }
 }
