@@ -47,6 +47,17 @@ test("флажок и переключатель работают с клави�
   expect(toggle.getAttribute("aria-checked")).toBe("true");
 });
 
+test("сегментный переключатель меняет выбранный вариант стрелками", async () => {
+  render(<Home />);
+  const user = userEvent.setup();
+  const first = screen.getByRole("radio", { name: "Все" });
+  first.focus();
+  await user.keyboard("{ArrowRight}");
+  expect(
+    screen.getByRole("radio", { name: "Расходы" }).getAttribute("aria-checked"),
+  ).toBe("true");
+});
+
 test("диалог закрывается отменой и возвращает фокус", async () => {
   render(<Home />);
   const user = userEvent.setup();
