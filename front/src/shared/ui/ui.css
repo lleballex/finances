@@ -174,10 +174,17 @@
   padding: 8px;
   border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 20px;
-  background: rgba(250, 250, 248, 0.82);
-  backdrop-filter: blur(20px) saturate(130%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.64),
+    rgba(250, 250, 248, 0.46)
+  );
+  backdrop-filter: blur(18px) saturate(150%);
   color: #171717;
-  box-shadow: 0 12px 28px rgba(23, 23, 23, 0.12);
+  box-shadow:
+    0 12px 28px rgba(23, 23, 23, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   transform-origin: var(--transform-origin);
   transition:
     opacity 0.2s ease,
@@ -201,7 +208,7 @@
 }
 .ui-popup-item[data-highlighted],
 .ui-popup-item:hover {
-  background: #eeefeb;
+  background: rgba(255, 255, 255, 0.55);
 }
 .ui-popup-item[data-disabled] {
   opacity: 0.45;
@@ -228,10 +235,17 @@
   padding: 28px;
   border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 30px;
-  background: rgba(250, 250, 248, 0.88);
-  backdrop-filter: blur(20px) saturate(130%);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.78),
+    rgba(250, 250, 248, 0.64)
+  );
+  backdrop-filter: blur(24px) saturate(150%);
   color: #171717;
-  box-shadow: 0 12px 40px rgba(23, 23, 23, 0.16);
+  box-shadow:
+    0 12px 40px rgba(23, 23, 23, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   transition:
     opacity 0.22s ease,
     scale 0.22s ease;
@@ -254,7 +268,7 @@
 }
 .ui-dialog-description {
   margin-top: 12px;
-  color: #6b6d72;
+  color: #171717;
   font-size: 15px;
   line-height: 1.6;
 }
@@ -264,6 +278,12 @@
   justify-content: flex-end;
   gap: 12px;
   margin-top: 28px;
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .ui-popup,
+  .ui-dialog {
+    background: #fafaf8;
+  }
 }
 .ui-choice {
   display: inline-flex;
