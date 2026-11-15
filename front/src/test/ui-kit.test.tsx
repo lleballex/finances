@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createAgent } from "@ui-sdk/react/agent";
 import { expect, test } from "vitest";
@@ -56,6 +56,19 @@ test("сегментный переключатель меняет выбран�
   expect(
     screen.getByRole("radio", { name: "Расходы" }).getAttribute("aria-checked"),
   ).toBe("true");
+});
+
+test("плашка списка следует за активным пунктом", async () => {
+  render(<Home />);
+  const user = userEvent.setup();
+  await user.click(screen.getByRole("combobox", { name: "Категория" }));
+  const list = screen.getByRole("listbox", { name: "Категория" });
+  const cafe = within(list).getByRole("option", { name: "Кафе" });
+  Object.defineProperty(cafe, "offsetTop", { configurable: true, value: 48 });
+  await user.hover(cafe);
+  await waitFor(() =>
+    expect(list.style.getPropertyValue("--popup-indicator-top")).toBe("48px"),
+  );
 });
 
 test("диалог закрывается отменой и возвращает фокус", async () => {

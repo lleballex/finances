@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentProps, ReactNode } from "react";
-import { useLayoutEffect, useRef } from "react";
+import { useCallback, useLayoutEffect, useRef } from "react";
 import { Button as SdkButton } from "@ui-sdk/react/button";
 import {
   Field,
@@ -81,6 +81,61 @@ export function TextField({
 }
 
 type Option = { value: string; label: string; disabled?: boolean };
+
+function usePopupIndicator() {
+  return useCallback((popup: HTMLDivElement | null) => {
+    if (!popup) return;
+    const update = () => {
+      const active =
+        popup.querySelector<HTMLElement>(
+          ".ui-popup-item[data-highlighted]:not([data-disabled])",
+        ) ??
+        popup.querySelector<HTMLElement>(
+          ".ui-popup-item[data-selected]:not([data-disabled])",
+        );
+      if (!popup.hasAttribute("data-open") || !active) {
+        popup.removeAttribute("data-indicator-ready");
+        return;
+      }
+      popup.style.setProperty("--popup-indicator-top", `${active.offsetTop}px`);
+      popup.style.setProperty(
+        "--popup-indicator-left",
+        `${active.offsetLeft}px`,
+      );
+      popup.style.setProperty(
+        "--popup-indicator-width",
+        `${active.offsetWidth}px`,
+      );
+      popup.style.setProperty(
+        "--popup-indicator-height",
+        `${active.offsetHeight}px`,
+      );
+      popup.setAttribute("data-indicator-ready", "");
+    };
+    const observer = new MutationObserver(update);
+    observer.observe(popup, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: [
+        "data-open",
+        "data-highlighted",
+        "data-selected",
+        "data-disabled",
+      ],
+    });
+    const resizeObserver =
+      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(update);
+    resizeObserver?.observe(popup);
+    popup
+      .querySelectorAll<HTMLElement>(".ui-popup-item")
+      .forEach((item) => resizeObserver?.observe(item));
+    update();
+    return () => {
+      observer.disconnect();
+      resizeObserver?.disconnect();
+    };
+  }, []);
+}
 export function SegmentedControl({
   label,
   options,
@@ -182,6 +237,7 @@ export function SelectField({
     { multiple?: false }
   >["onValueChange"];
 }) {
+  const popupRef = usePopupIndicator();
   return (
     <Select
       items={options}
@@ -198,7 +254,7 @@ export function SelectField({
           <ChevronDown size={18} aria-hidden="true" />
         </SelectTrigger>
       </div>
-      <SelectContent className="ui-popup">
+      <SelectContent className="ui-popup" ref={popupRef}>
         {options.map((option) => (
           <SelectItem
             className="ui-popup-item"
@@ -222,12 +278,13 @@ export function ActionMenu({
   options: Option[];
   onAction?: (value: string) => void;
 }) {
+  const popupRef = usePopupIndicator();
   return (
     <Menu onAction={onAction}>
       <MenuTrigger className="ui-button ui-button--icon" aria-label={label}>
         <MoreHorizontal size={20} aria-hidden="true" />
       </MenuTrigger>
-      <MenuContent className="ui-popup">
+      <MenuContent className="ui-popup" ref={popupRef}>
         {options.map((option) => (
           <MenuItem
             className="ui-popup-item"

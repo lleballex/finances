@@ -179,7 +179,7 @@
     rgba(255, 255, 255, 0.28),
     rgba(250, 250, 248, 0.18)
   );
-  backdrop-filter: blur(5px) saturate(150%);
+  backdrop-filter: blur(7px) saturate(150%);
   color: #171717;
   box-shadow: 0 12px 28px rgba(23, 23, 23, 0.14);
   transform-origin: var(--transform-origin);
@@ -192,7 +192,24 @@
   opacity: 0;
   scale: 0.97;
 }
+.ui-popup[data-indicator-ready]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--popup-indicator-width);
+  height: var(--popup-indicator-height);
+  border-radius: 16px;
+  background: rgba(107, 109, 114, 0.28);
+  transform: translate(var(--popup-indicator-left), var(--popup-indicator-top));
+  transition:
+    transform 0.28s ease,
+    width 0.28s ease,
+    height 0.28s ease;
+  pointer-events: none;
+}
 .ui-popup-item {
+  position: relative;
   display: flex;
   align-items: center;
   min-height: 40px;
@@ -211,6 +228,9 @@
 .ui-popup-item[data-selected] {
   background: rgba(107, 109, 114, 0.28);
   color: #171717;
+}
+.ui-popup[data-indicator-ready] .ui-popup-item {
+  background: transparent;
 }
 .ui-popup-item[data-selected]::after {
   content: "✓" / "";
