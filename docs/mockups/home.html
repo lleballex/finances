@@ -8,17 +8,32 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{font-family:Manrope,"Avenir Next",sans-serif;color:#171717;background:#dadbd6 url("mountains.png") center/cover}.page{position:relative;isolation:isolate;width:min(1300px,100%);height:100dvh;margin:auto;overflow:hidden;border:1px solid rgba(255,255,255,.4);border-radius:56px;background:rgba(250,250,248,.36);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.page:before{content:"";position:absolute;inset:16px;border-radius:40px;background:linear-gradient(145deg,rgba(250,250,248,.84),rgba(250,250,248,.42));z-index:-2}.wordmark{position:absolute;top:8%;left:0;width:100%;text-align:center}.wordmark h1{margin:0;font-size:clamp(100px,20vw,270px);font-weight:800;letter-spacing:-.09em;line-height:.85;padding-right:.09em}.wordmark p{margin:12px 0 0;font-size:clamp(16px,2.1vw,26px);font-weight:800;letter-spacing:.28em;text-transform:uppercase}.sculpture{position:absolute;z-index:1;left:50%;top:38%;width:min(67vw,780px);height:55%;object-fit:contain;transform:translateX(-50%);animation:float 8s ease-in-out infinite;pointer-events:none}.intro{position:absolute;left:6%;bottom:8%;z-index:2;max-width:240px;margin:0;font-size:clamp(16px,1.5vw,19px);font-weight:700;line-height:1.35;letter-spacing:-.03em}.login{position:absolute;right:6%;bottom:8%;z-index:2;display:flex;align-items:center;gap:12px;padding:9px 22px 9px 9px;border:0;border-radius:99px;background:#202020;color:#fff;font:700 15px Manrope,sans-serif;box-shadow:0 10px 30px #20202024;cursor:pointer}.login:hover{background:#343434}.login:focus-visible{outline:3px solid #171717;outline-offset:4px}.ya{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#fc3f1d;color:white;font:700 24px Arial,sans-serif}.arrow{font-size:20px;margin-left:8px}.note{position:absolute;right:6%;bottom:4%;z-index:2;margin:0;color:#6b6d72;font-size:11px}.orbit{position:absolute;left:50%;top:58%;width:70%;height:22%;border:1px solid rgba(70,75,65,.22);border-radius:50%;transform:translateX(-50%) rotate(-11deg);z-index:0;pointer-events:none}@keyframes float{50%{transform:translate(-50%,-12px) rotate(2deg)}}@media(max-width:700px){.page{border:0;border-radius:0}.page:before{inset:10px;border-radius:30px}.wordmark{top:14%}.wordmark h1{font-size:clamp(74px,19vw,135px)}.wordmark p{font-size:14px;margin-top:14px}.sculpture{top:33%;width:110%;height:39%}.orbit{top:45%;width:100%;height:16%}.intro{left:8%;bottom:22%;max-width:220px;font-size:16px}.login{left:8%;right:8%;bottom:9%;justify-content:center}.note{left:8%;right:auto;bottom:5%}}@media(max-height:600px) and (min-width:701px){.wordmark{top:6%}.wordmark h1{font-size:min(19vw,33vh)}.wordmark p{margin-top:6px}.sculpture{top:35%;height:58%}.intro,.login{bottom:7%}.note{bottom:2%}}@media(prefers-reduced-motion:reduce){.sculpture{animation:none}}
+*{box-sizing:border-box}
+html,body{width:100%;height:100%;margin:0;overflow:hidden}
+body{font-family:Manrope,Arial,sans-serif;color:#111215;background:#bdbdbd}
+.page{position:relative;isolation:isolate;width:100%;height:100dvh;overflow:hidden;background:#e8e9e7}
+.page:before{content:"";position:absolute;inset:0 0 44%;background:#fafafa;border-radius:0 0 32px 32px;z-index:-1}
+.brand{position:absolute;top:7%;left:4.5%;right:4.5%;text-align:center}
+.brand h1{margin:0;font-size:min(24vw,32vh);font-weight:800;letter-spacing:-.085em;line-height:1;text-transform:uppercase;white-space:nowrap}
+.brand p{margin:0;font-size:clamp(13px,1.6vw,22px);font-weight:800;letter-spacing:.32em;text-transform:uppercase}
+.sculpture{position:absolute;z-index:1;left:50%;top:36%;width:min(68vw,1000px);height:59%;object-fit:contain;transform:translateX(-50%);animation:float 9s ease-in-out infinite;pointer-events:none}
+.intro{position:absolute;z-index:2;left:5%;bottom:7%;width:210px;margin:0;font-size:clamp(15px,1.35vw,20px);font-weight:600;line-height:1.18;letter-spacing:-.035em}
+.intro:after{content:"";display:block;width:150px;margin-top:13px;border-bottom:2px dotted #292929}
+.login{position:absolute;z-index:2;right:5%;bottom:7%;display:flex;align-items:center;gap:11px;padding:9px 20px 9px 9px;border:0;border-radius:99px;background:#171717;color:#fff;font:700 14px Manrope,Arial,sans-serif;cursor:pointer;box-shadow:0 8px 22px #0002}
+.login:hover{background:#333}.login:focus-visible{outline:3px solid #171717;outline-offset:4px}
+.ya{display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#fc3f1d;color:#fff;font:700 23px Arial,sans-serif}.arrow{margin-left:8px;font-size:19px}
+@keyframes float{50%{transform:translate(-50%,-10px) rotate(2deg)}}
+@media(max-width:700px){.page:before{bottom:48%;border-radius:0 0 24px 24px}.brand{top:12%;left:4%;right:4%}.brand h1{font-size:min(23vw,20vh)}.brand p{font-size:12px;letter-spacing:.27em;margin-top:5px}.sculpture{top:32%;width:115%;height:42%}.intro{left:7%;bottom:23%;width:175px;font-size:15px}.intro:after{width:120px;margin-top:9px}.login{left:7%;right:7%;bottom:8%;justify-content:center}}
+@media(max-height:550px) and (min-width:701px){.brand{top:3%}.brand h1{font-size:min(22vw,29vh)}.brand p{font-size:13px}.sculpture{top:30%;height:65%}.intro,.login{bottom:5%}}
+@media(prefers-reduced-motion:reduce){.sculpture{animation:none}}
 </style>
 </head>
 <body>
 <main class="page">
-  <div class="wordmark"><h1>могну</h1><p>финансы</p></div>
-  <div class="orbit" aria-hidden="true"></div>
-  <img class="sculpture" src="finance-sculpture.png" alt="">
+  <div class="brand"><h1>Могну</h1><p>финансы</p></div>
+  <img class="sculpture" src="finance-sculpture-v2.png" alt="">
   <p class="intro">Ваши финансы.<br>Понятная картина.</p>
-  <button class="login" type="button" aria-label="Войти через Яндекс ID — демонстрация"><span class="ya" aria-hidden="true">Я</span> Войти через Яндекс ID <span class="arrow" aria-hidden="true">↗</span></button>
-  <p class="note">Макет · вход пока не подключён</p>
+  <button class="login" type="button" aria-label="Войти через Яндекс ID — демонстрация"><span class="ya" aria-hidden="true">Я</span>Войти через Яндекс ID<span class="arrow" aria-hidden="true">↗</span></button>
 </main>
 </body>
 </html>
