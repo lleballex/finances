@@ -13,6 +13,20 @@ body:before{display:block;position:fixed;inset:0;width:min(1200px,calc(100% - 32
 .main{grid-column:2}
 @media(max-width:1232px){.app{margin:0 16px}}
 @media(max-width:700px){body:before{width:100%;border-radius:0}.app{margin:0;border-radius:0}.main{grid-column:auto}}
+/* Карточки категорий: общий ритм и отдельные строки подкатегорий. */
+.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start}
+.category{border-radius:30px;overflow:hidden}
+.category-head,.sub-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;align-items:center;gap:14px}
+.category-head{padding:22px;min-height:92px}
+.name{min-width:0;overflow-wrap:anywhere;line-height:1.4}
+.actions{margin:0;gap:6px}
+.action{width:36px;height:36px;flex:none}
+.sub-list{border-top:1px solid #e8eae5}
+.sub-row{grid-template-columns:38px minmax(0,1fr) auto;padding:13px 22px 13px 30px;min-height:65px}
+.sub-row .name{font-size:14px}.sub-row .action{width:32px;height:32px}
+.recurring{width:18px;height:18px;font-size:14px}
+@media(max-width:850px){.grid{grid-template-columns:1fr}}
+@media(max-width:700px){.category{border-radius:27px}.category-head{padding:18px}.sub-row{padding-left:24px;padding-right:18px}}
 </style>
 </head>
 <body><div class="app">
