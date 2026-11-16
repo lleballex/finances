@@ -3,6 +3,11 @@ import {
   ForbiddenException,
   Body,
   Post,
+  Put,
+  Delete,
+  Param,
+  ParseUUIDPipe,
+  NotFoundException,
   Controller,
   Get,
   Query,
@@ -90,6 +95,69 @@ export class TransactionsController {
     });
   }
 
+  @Put(":id")
+  async update(
+    @Req() request: Request,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() input: CreateTransactionDto,
+  ) {
+    if (request.headers.origin !== process.env.FRONTEND_ORIGIN)
+      throw new ForbiddenException();
+    const token = request.headers.cookie
+      ?.split(";")
+      .map((part) => part.trim())
+      .find((part) => part.startsWith("session="))
+      ?.slice(8);
+    const user = await this.auth.getUser(token);
+    return this.db.transaction(async (db) => {
+      await db.query("SELECT pg_advisory_xact_lock(hashtextextended($1, 0))", [
+        user.id,
+      ]);
+      const rows = await db.query(
+        `UPDATE "transaction" t SET category_id = target.id, amount = CASE WHEN target.type = 'expense' THEN -$4::numeric ELSE $4::numeric END, operation_date = $5::date, accounting_period = $6::date, description = $7, is_regular = COALESCE($8::boolean, target.is_regular), updated_at = now() FROM category target, category previous WHERE t.id = $1 AND t.category_id = previous.id AND previous.user_id = $2 AND target.id = $3 AND target.user_id = $2 RETURNING t.id`,
+        [
+          id,
+          user.id,
+          input.categoryId,
+          input.amount,
+          input.operationDate,
+          input.accountingPeriod,
+          input.description?.trim() || null,
+          input.isRegular ?? null,
+        ],
+      );
+      if (!rows.length)
+        throw new NotFoundException("Транзакция или категория недоступна");
+      return { id: rows[0].id };
+    });
+  }
+
+  @Delete(":id")
+  async remove(
+    @Req() request: Request,
+    @Param("id", ParseUUIDPipe) id: string,
+  ) {
+    if (request.headers.origin !== process.env.FRONTEND_ORIGIN)
+      throw new ForbiddenException();
+    const token = request.headers.cookie
+      ?.split(";")
+      .map((part) => part.trim())
+      .find((part) => part.startsWith("session="))
+      ?.slice(8);
+    const user = await this.auth.getUser(token);
+    return this.db.transaction(async (db) => {
+      await db.query("SELECT pg_advisory_xact_lock(hashtextextended($1, 0))", [
+        user.id,
+      ]);
+      const rows = await db.query(
+        'DELETE FROM "transaction" t USING category c WHERE t.id = $1 AND t.category_id = c.id AND c.user_id = $2 RETURNING t.id',
+        [id, user.id],
+      );
+      if (!rows.length) throw new NotFoundException("Транзакция недоступна");
+      return { id: rows[0].id };
+    });
+  }
+
   @Get()
   async list(@Req() request: Request, @Query() query: TransactionQuery) {
     const token = request.headers.cookie
@@ -123,7 +191,7 @@ export class TransactionsController {
         : "to_char(t.operation_date, 'YYYY-MM-DD')";
     const [data, counts, totals] = await Promise.all([
       this.db.query(
-        `SELECT t.id, to_char(t.operation_date, 'YYYY-MM-DD') AS date, c.name AS category, c.emoji, c.color, t.amount::text AS amount, t.is_regular AS regular, to_char(t.accounting_period, 'YYYY-MM') AS period FROM "transaction" t JOIN category c ON c.id = t.category_id WHERE ${conditions} ORDER BY t.operation_date DESC, t.created_at DESC, t.id DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
+        `SELECT t.id, t.category_id AS "categoryId", t.description, to_char(t.operation_date, 'YYYY-MM-DD') AS date, c.name AS category, c.emoji, c.color, t.amount::text AS amount, t.is_regular AS regular, to_char(t.accounting_period, 'YYYY-MM') AS period FROM "transaction" t JOIN category c ON c.id = t.category_id WHERE ${conditions} ORDER BY t.operation_date DESC, t.created_at DESC, t.id DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`,
         [...params, query.limit, (query.page - 1) * query.limit],
       ),
       this.db.query(

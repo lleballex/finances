@@ -8,6 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import { LoaderCircle, Plus } from "lucide-react";
 import { api } from "@/shared/api/client";
+import type { Transaction } from "./types";
 import {
   Button,
   DateField,
@@ -59,28 +60,51 @@ function defaults(): Values {
   };
 }
 
-export function CreateTransaction({ onCreated }: { onCreated: () => void }) {
+export function CreateTransaction({
+  onCreated,
+  editing,
+  onEditClose,
+}: {
+  onCreated: () => void;
+  editing?: Transaction | null;
+  onEditClose?: () => void;
+}) {
   const [open, setOpen] = useState(false);
-  const [periodOverridden, setPeriodOverridden] = useState(false);
+  const [periodOverridden, setPeriodOverridden] = useState(
+    !!editing && editing.period !== editing.date.slice(0, 7),
+  );
   const form = useForm<Values>({
     resolver: zodResolver(schema),
-    defaultValues: defaults(),
+    defaultValues: editing
+      ? {
+          categoryId: editing.categoryId,
+          amount: editing.amount.replace(/^-/, ""),
+          operationDate: editing.date,
+          accountingPeriod: editing.period,
+          description: editing.description ?? "",
+          isRegular: editing.regular,
+        }
+      : defaults(),
   });
   const categories = useQuery({
     queryKey: ["categories"],
     queryFn: async () => (await api.get<Category[]>("/categories")).data,
-    enabled: open,
+    enabled: open || !!editing,
   });
   const mutation = useMutation({
     mutationFn: async (values: Values) =>
-      api.post("/transactions", {
-        ...values,
-        amount: values.amount.replace(",", "."),
-        accountingPeriod: `${values.accountingPeriod}-01`,
-      }),
+      api[editing ? "put" : "post"](
+        editing ? `/transactions/${editing.id}` : "/transactions",
+        {
+          ...values,
+          amount: values.amount.replace(",", "."),
+          accountingPeriod: `${values.accountingPeriod}-01`,
+        },
+      ),
     onSuccess: (_result, values) => {
-      lastOperationDate = values.operationDate;
+      if (!editing) lastOperationDate = values.operationDate;
       setOpen(false);
+      onEditClose?.();
       onCreated();
     },
   });
@@ -90,8 +114,12 @@ export function CreateTransaction({ onCreated }: { onCreated: () => void }) {
   }));
   return (
     <Modal
-      open={open}
+      open={open || !!editing}
       onOpenChange={(next) => {
+        if (!next && editing) {
+          onEditClose?.();
+          return;
+        }
         if (next) {
           form.reset(defaults());
           setPeriodOverridden(false);
@@ -99,7 +127,7 @@ export function CreateTransaction({ onCreated }: { onCreated: () => void }) {
         }
         setOpen(next);
       }}
-      title="Добавить транзакцию"
+      title={editing ? "Изменить транзакцию" : "Добавить транзакцию"}
       trigger={
         <>
           <Plus size={20} />
@@ -237,7 +265,10 @@ export function CreateTransaction({ onCreated }: { onCreated: () => void }) {
           <Button
             variant="secondary"
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={() => {
+              setOpen(false);
+              onEditClose?.();
+            }}
           >
             Отмена
           </Button>

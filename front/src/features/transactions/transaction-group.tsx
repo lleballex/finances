@@ -28,12 +28,16 @@ export function TransactionGroup({
   open,
   onOpenChange,
   total,
+  onEdit,
+  onDelete,
 }: {
   groupKey: string;
   items: Transaction[];
   open: boolean;
   onOpenChange: (open: boolean) => void;
   total: string;
+  onEdit: (item: Transaction) => void;
+  onDelete: (item: Transaction) => void;
 }) {
   const totalAmount = Number(total);
   return (
@@ -65,6 +69,7 @@ export function TransactionGroup({
         <div
           className={`transaction-row${item.regular ? " is-regular" : ""}`}
           key={item.id}
+          data-transaction-id={item.id}
         >
           <span
             className="transaction-category-icon"
@@ -106,9 +111,13 @@ export function TransactionGroup({
           <ActionMenu
             label={`Действия с транзакцией ${item.category} от ${dateLabel(item.date)}`}
             options={[
-              { value: "edit", label: "Изменить", disabled: true },
-              { value: "delete", label: "Удалить", disabled: true },
+              { value: "edit", label: "Изменить" },
+              { value: "delete", label: "Удалить" },
             ]}
+            onAction={(action) => {
+              if (action === "edit") onEdit(item);
+              if (action === "delete") onDelete(item);
+            }}
           />
         </div>
       ))}

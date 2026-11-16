@@ -80,3 +80,86 @@ test("пустой ответ API показывает пустое состоя
   );
   expect(await screen.findByText("Транзакции не найдены")).toBeTruthy();
 });
+
+test("редактирует и удаляет транзакцию с подтверждением", async () => {
+  const { api } = await import("../shared/api/client");
+  const category = {
+    id: "e7161ff3-a59e-435a-bd5e-c7695db595bc",
+    name: "Кофе",
+    type: "expense",
+    emoji: "☕",
+    isRegular: false,
+    parentId: null,
+  };
+  const item = {
+    id: "one",
+    categoryId: category.id,
+    description: "Заметка",
+    date: "2026-11-15",
+    category: "Кофе",
+    amount: "-480.00",
+    emoji: "☕",
+    color: "#f2e9dd",
+    regular: true,
+    period: "2026-10",
+  };
+  vi.stubGlobal(
+    "fetch",
+    vi
+      .fn()
+      .mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          data: [item],
+          meta: { page: 1, limit: 20, total: 1 },
+          groupTotals: { "2026-11-15": "-480.00" },
+        }),
+      }),
+  );
+  vi.spyOn(api, "get").mockResolvedValue({ data: [category] });
+  const put = vi.spyOn(api, "put").mockResolvedValue({ data: {} });
+  const remove = vi.spyOn(api, "delete").mockResolvedValue({ data: {} });
+  const user = userEvent.setup();
+  render(
+    <Providers>
+      <TransactionsPage />
+    </Providers>,
+  );
+  await user.click(
+    await screen.findByRole("button", { name: /Действия с транзакцией Кофе/ }),
+  );
+  await user.click(await screen.findByRole("menuitem", { name: "Изменить" }));
+  expect(screen.getByRole("textbox", { name: "Описание" })).toHaveProperty(
+    "value",
+    "Заметка",
+  );
+  expect(screen.getByRole("textbox", { name: "Сумма" })).toHaveProperty(
+    "value",
+    "480.00",
+  );
+  await user.clear(screen.getByRole("textbox", { name: "Сумма" }));
+  await user.type(screen.getByRole("textbox", { name: "Сумма" }), "700");
+  await user.click(screen.getByRole("button", { name: "Сохранить" }));
+  await vi.waitFor(() =>
+    expect(put).toHaveBeenCalledWith(
+      "/transactions/one",
+      expect.objectContaining({
+        amount: "700",
+        description: "Заметка",
+        accountingPeriod: "2026-10-01",
+        isRegular: true,
+      }),
+    ),
+  );
+  await vi.waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  await user.click(
+    await screen.findByRole("button", { name: /Действия с транзакцией Кофе/ }),
+  );
+  await user.click(await screen.findByRole("menuitem", { name: "Удалить" }));
+  expect(remove).not.toHaveBeenCalled();
+  await user.click(screen.getByRole("button", { name: "Удалить" }));
+  await vi.waitFor(() =>
+    expect(remove).toHaveBeenCalledWith("/transactions/one"),
+  );
+  vi.restoreAllMocks();
+});

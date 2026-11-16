@@ -45,3 +45,20 @@ test("создание отклоняет чужой origin до обращен�
   await assert.rejects(controller.create({ headers: { origin: "https://example.com" } }, {}));
   assert.equal(queried, false);
 });
+
+test("редактирование проверяет владельца операции и новой категории", async () => {
+  process.env.FRONTEND_ORIGIN = "http://localhost:3001";
+  let call;
+  const controller = new TransactionsController({ getUser: async () => ({ id: "owner-id" }) }, { transaction: async (fn) => fn({ query: async (sql, params) => { if (sql.startsWith('UPDATE')) { call = { sql, params }; return [{ id: 'transaction-id' }]; } return []; } }) });
+  await controller.update({ headers: { origin: "http://localhost:3001" } }, 'transaction-id', { categoryId: 'category-id', amount: '10.00', operationDate: '2026-11-16', accountingPeriod: '2026-11-01', isRegular: true });
+  assert.match(call.sql, /previous\.user_id = \$2/);
+  assert.match(call.sql, /target\.user_id = \$2/);
+  assert.match(call.sql, /WHEN target\.type = 'expense'/);
+  assert.equal(call.params[1], 'owner-id');
+});
+
+test("удаление отклоняет чужую или отсутствующую транзакцию", async () => {
+  process.env.FRONTEND_ORIGIN = "http://localhost:3001";
+  const controller = new TransactionsController({ getUser: async () => ({ id: "owner-id" }) }, { transaction: async (fn) => fn({ query: async () => [] }) });
+  await assert.rejects(controller.remove({ headers: { origin: "http://localhost:3001" } }, 'other-id'), { status: 404 });
+});

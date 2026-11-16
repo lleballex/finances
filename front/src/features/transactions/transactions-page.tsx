@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, LoaderCircle } from "lucide-react";
-import { Button, SegmentedControl } from "@/shared/ui";
+import { Button, Modal, SegmentedControl } from "@/shared/ui";
+import { api } from "@/shared/api/client";
+import { useMutation } from "@tanstack/react-query";
 import { API_URL } from "@/features/auth/session";
 import type { Transaction, TransactionsResponse } from "./types";
 import { CreateTransaction } from "./create-transaction";
@@ -28,6 +30,31 @@ export function TransactionsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [revision, setRevision] = useState(0);
+  const [editing, setEditing] = useState<Transaction | null>(null);
+  const [deleting, setDeleting] = useState<Transaction | null>(null);
+  const remove = useMutation({
+    mutationFn: (id: string) => api.delete(`/transactions/${id}`),
+    onSuccess: () => {
+      setDeleting(null);
+      setRevision((value) => value + 1);
+    },
+  });
+  function restoreActionFocus(id: string) {
+    requestAnimationFrame(() => {
+      const row = document.querySelector(
+        `[data-transaction-id="${CSS.escape(id)}"]`,
+      );
+      row?.querySelector<HTMLButtonElement>("button")?.focus();
+    });
+  }
+  function closeEdit() {
+    if (editing) restoreActionFocus(editing.id);
+    setEditing(null);
+  }
+  function closeDelete() {
+    if (deleting) restoreActionFocus(deleting.id);
+    setDeleting(null);
+  }
   const sentinel = useRef<HTMLDivElement>(null);
   const requestController = useRef<AbortController | null>(null);
 
@@ -165,6 +192,11 @@ export function TransactionsPage() {
             groupKey={key}
             items={group}
             total={totals[key] ?? "0"}
+            onEdit={setEditing}
+            onDelete={(item) => {
+              remove.reset();
+              setDeleting(item);
+            }}
             open={!closed.has(key)}
             onOpenChange={(open) =>
               setClosed((previous) => {
@@ -194,9 +226,37 @@ export function TransactionsPage() {
         )}
         <div ref={sentinel} />
       </section>
+      <Modal
+        open={!!deleting}
+        onOpenChange={(next) => {
+          if (!next) closeDelete();
+        }}
+        title="Удалить транзакцию?"
+      >
+        <p>Транзакция «{deleting?.category}» будет удалена.</p>
+        {remove.isError && (
+          <p className="ui-error" role="alert">
+            Не удалось удалить транзакцию. Попробуйте снова.
+          </p>
+        )}
+        <div className="transaction-form-actions">
+          <Button variant="secondary" onClick={closeDelete}>
+            Отмена
+          </Button>
+          <Button
+            disabled={remove.isPending}
+            onClick={() => deleting && remove.mutate(deleting.id)}
+          >
+            Удалить
+          </Button>
+        </div>
+      </Modal>
       <aside className="transactions-aside">
         <CreateTransaction
+          key={editing?.id ?? "create"}
           onCreated={() => setRevision((value) => value + 1)}
+          editing={editing}
+          onEditClose={closeEdit}
         />
         <TransactionFilters
           query={query}
