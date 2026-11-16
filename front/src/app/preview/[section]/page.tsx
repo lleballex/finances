@@ -17,7 +17,7 @@ export default async function PreviewPage({
   const { section } = await params;
   if (!isWorkspaceSection(section)) notFound();
   return (
-    <WorkspaceShell section={section}>
+    <WorkspaceShell section={section} preview>
       <h1>{titles[section]}</h1>
       <div className="workspace-empty">
         <p>Раздел находится в разработке.</p>

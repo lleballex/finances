@@ -26,11 +26,13 @@ export function WorkspaceShell({
   children,
   user,
   onLogout,
+  preview = false,
 }: {
-  section: WorkspaceSection;
+  section?: WorkspaceSection;
   children: ReactNode;
-  user?: SessionUser;
+  user?: SessionUser | null;
   onLogout?: () => void;
+  preview?: boolean;
 }) {
   return (
     <div className="workspace-shell">
@@ -46,7 +48,7 @@ export function WorkspaceShell({
           {navigation.map(({ slug, label, icon: Icon }) => (
             <Link
               key={slug}
-              href={user ? `/${slug}` : `/preview/${slug}`}
+              href={preview ? `/preview/${slug}` : `/${slug}`}
               aria-current={slug === section ? "page" : undefined}
             >
               <Icon size={19} aria-hidden="true" />
@@ -66,9 +68,9 @@ export function WorkspaceShell({
               onAction={() => onLogout?.()}
             />
           </div>
-        ) : (
+        ) : preview ? (
           <div className="workspace-preview-label">Предпросмотр интерфейса</div>
-        )}
+        ) : null}
       </aside>
       <main className="workspace-content">{children}</main>
     </div>

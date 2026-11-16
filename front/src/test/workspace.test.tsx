@@ -5,7 +5,7 @@ import { WorkspaceShell } from "../features/workspace/workspace-shell";
 
 test("навигация показывает текущий раздел и ссылки на остальные разделы", () => {
   render(
-    <WorkspaceShell section="transactions">
+    <WorkspaceShell section="transactions" preview>
       <h1>Транзакции</h1>
     </WorkspaceShell>,
   );
