@@ -75,25 +75,25 @@ function LineChart({
     min = Math.min(...values),
     span = max - min || 1;
   const x = (index: number) =>
-    keys.length === 1 ? 271 : 44 + (index * 454) / Math.max(keys.length - 1, 1);
+    keys.length === 1 ? 544 : 88 + (index * 908) / Math.max(keys.length - 1, 1);
   const y = (value: number) => 165 - ((value - min) * 140) / span;
   const show = Math.max(1, Math.ceil(keys.length / 7));
   return (
     <svg
       className="statistics-line-chart"
-      viewBox="0 0 500 200"
+      viewBox="0 0 1000 200"
       role="img"
       aria-label={label}
     >
       {[0, 1, 2, 3].map((i) => (
         <g key={i}>
           <line
-            x1="44"
-            x2="498"
+            x1="88"
+            x2="996"
             y1={25 + (i * 140) / 3}
             y2={25 + (i * 140) / 3}
           />
-          <text x="38" y={29 + (i * 140) / 3} textAnchor="end">
+          <text x="76" y={29 + (i * 140) / 3} textAnchor="end">
             {(max === min ? 0 : (max - (i * span) / 3) / 100).toLocaleString(
               "ru-RU",
               { maximumFractionDigits: 2 },
@@ -363,11 +363,6 @@ function Analysis({
       </Card>
       <Card className="statistics-panel">
         <Heading icon={ChartPie}>Распределение по категориям</Heading>
-        {parent && (
-          <p className="statistics-drill-label">
-            {parent.name} · нажмите на диаграмму, чтобы вернуться
-          </p>
-        )}
         {slices.length || drill ? (
           <Donut
             slices={slices}
