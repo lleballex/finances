@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { TransactionsPage } from "@/features/transactions/transactions-page";
 import { isWorkspaceSection } from "@/features/workspace/sections";
 
 const titles = {
@@ -15,6 +16,7 @@ export default async function WorkspacePage({
 }) {
   const { section } = await params;
   if (!isWorkspaceSection(section)) notFound();
+  if (section === "transactions") return <TransactionsPage />;
   return (
     <>
       <h1>{titles[section]}</h1>
