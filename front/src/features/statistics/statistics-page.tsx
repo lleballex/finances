@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowDown,
@@ -70,30 +70,47 @@ function LineChart({
   label: string;
   signed?: boolean;
 }) {
+  const ref = useRef<SVGSVGElement | null>(null);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const observer = new ResizeObserver(([entry]) => {
+      setWidth(entry.contentRect.width);
+    });
+    if (ref.current) {
+      observer.observe(ref.current);
+      setWidth(ref.current.clientWidth);
+    }
+    return () => observer.disconnect();
+  }, []);
   const values = lines.flatMap((line) => line.values).concat(0),
     max = Math.max(...values),
     min = Math.min(...values),
     span = max - min || 1;
+  const right = Math.max(width - 4, 100),
+    left = 72;
   const x = (index: number) =>
-    keys.length === 1 ? 544 : 88 + (index * 908) / Math.max(keys.length - 1, 1);
+    keys.length === 1
+      ? (left + right) / 2
+      : left + (index * (right - left)) / Math.max(keys.length - 1, 1);
   const y = (value: number) => 165 - ((value - min) * 140) / span;
   const show = Math.max(1, Math.ceil(keys.length / 7));
   return (
     <svg
+      ref={ref}
       className="statistics-line-chart"
-      viewBox="0 0 1000 200"
+      viewBox={width ? `0 0 ${width} 200` : undefined}
       role="img"
       aria-label={label}
     >
       {[0, 1, 2, 3].map((i) => (
         <g key={i}>
           <line
-            x1="88"
-            x2="996"
+            x1={left}
+            x2={right}
             y1={25 + (i * 140) / 3}
             y2={25 + (i * 140) / 3}
           />
-          <text x="76" y={29 + (i * 140) / 3} textAnchor="end">
+          <text x={left - 8} y={29 + (i * 140) / 3} textAnchor="end">
             {(max === min ? 0 : (max - (i * span) / 3) / 100).toLocaleString(
               "ru-RU",
               { maximumFractionDigits: 2 },
