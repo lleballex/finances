@@ -706,16 +706,31 @@
 .ui-month-header {
   margin: 0 0 12px;
 }
+.ui-month-header .ui-calendar-nav.ui-button {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  min-height: 36px;
+  background: transparent;
+}
+.ui-month-header .ui-calendar-nav.ui-button:hover:not(:disabled) {
+  background: #eeefeb;
+}
 .ui-month-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px;
+  gap: 0;
 }
 .ui-month-option.ui-button {
   min-width: 0;
-  min-height: 44px;
+  min-height: 38px;
   padding: 0 4px;
+  background: #eeefeb;
   font-size: 13px;
+  font-weight: 600;
+}
+.ui-month-option.ui-button:hover:not([aria-pressed="true"]) {
+  background: #ddf45a;
 }
 .ui-month-option.ui-button[aria-pressed="true"] {
   background: #202020;
