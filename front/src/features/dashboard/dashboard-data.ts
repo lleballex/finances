@@ -29,6 +29,7 @@ export function dashboardData(
     {
       name: string;
       emoji: string;
+      color: string;
       current: number[];
       previous: number[];
       type: "income" | "expense";
@@ -49,6 +50,7 @@ export function dashboardData(
       category = {
         name: item.category,
         emoji: item.emoji,
+        color: item.color,
         current: Array(currentDays).fill(0),
         previous: Array(previousDays).fill(0),
         type: amount < 0 ? "expense" : "income",

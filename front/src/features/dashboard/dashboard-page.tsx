@@ -20,6 +20,28 @@ const month = (d: Date) =>
   new Intl.DateTimeFormat("ru-RU", { month: "long" }).format(d);
 const range = (day: number, d: Date) =>
   `1–${day} ${new Intl.DateTimeFormat("ru-RU", { day: "numeric", month: "long" }).format(d).replace(/^1\s*/, "")}`;
+function ComparisonChange({
+  current,
+  previous,
+  lowerIsBetter = false,
+}: {
+  current: number;
+  previous: number;
+  lowerIsBetter?: boolean;
+}) {
+  if (!previous || current === previous) return null;
+  const change = ((current - previous) / Math.abs(previous)) * 100;
+  const favorable = lowerIsBetter ? change < 0 : change > 0;
+  return (
+    <span
+      className={`dashboard-comparison-change ${favorable ? "positive" : "negative"}`}
+      aria-label={`На ${Math.abs(change).toLocaleString("ru-RU", { maximumFractionDigits: 1 })}% ${change > 0 ? "больше" : "меньше"}, чем за сопоставимый период предыдущего месяца`}
+    >
+      {change > 0 ? "↑" : "↓"}{" "}
+      {Math.abs(change).toLocaleString("ru-RU", { maximumFractionDigits: 1 })}%
+    </span>
+  );
+}
 async function loadTransactions() {
   const items: Transaction[] = [];
   let page = 1,
@@ -41,12 +63,14 @@ function Chart({
   day,
   names,
   label,
+  compact = false,
 }: {
   current: number[];
   previous: number[];
   day: number;
   names: string[];
   label: string;
+  compact?: boolean;
 }) {
   const visible = current.slice(0, day),
     values = [...visible, ...previous, 0];
@@ -54,7 +78,9 @@ function Chart({
     max = Math.max(...values),
     span = max - min || 1,
     width = Math.max(current.length, previous.length);
-  const x = (i: number) => 65 + (i * 865) / (width - 1),
+  const left = compact ? 48 : 65,
+    right = compact ? 482 : 930;
+  const x = (i: number) => left + (i * (right - left)) / (width - 1),
     y = (v: number) => 190 - ((v - min) / span) * 160;
   const points = (arr: number[]) =>
     arr.map((v, i) => `${x(i)},${y(v)}`).join(" ");
@@ -72,19 +98,20 @@ function Chart({
       </div>
       <svg
         className="dashboard-chart"
-        viewBox="0 0 960 225"
+        viewBox={compact ? "0 0 500 225" : "0 0 960 225"}
+        preserveAspectRatio={compact ? "none" : "xMidYMid meet"}
         role="img"
         aria-label={label}
       >
         {[0, 1, 2, 3].map((i) => (
           <g key={i}>
             <line
-              x1="65"
-              x2="930"
+              x1={left}
+              x2={right}
               y1={30 + (i * 160) / 3}
               y2={30 + (i * 160) / 3}
             />
-            <text x="55" y={34 + (i * 160) / 3} textAnchor="end">
+            <text x={left - 10} y={34 + (i * 160) / 3} textAnchor="end">
               {Math.round(max - (i * span) / 3).toLocaleString("ru-RU")}
             </text>
           </g>
@@ -118,7 +145,7 @@ export function DashboardPage() {
   return (
     <div className="dashboard-page">
       <header className="dashboard-header">
-        <div>
+        <div className="dashboard-title">
           <h1>Обзор</h1>
           {data && query.data?.length ? (
             <span className="dashboard-period">
@@ -147,10 +174,16 @@ export function DashboardPage() {
                 </span>
                 Общий результат
               </h2>
-              <div
-                className={`dashboard-value ${data.result[data.day - 1] < 0 ? "negative" : "positive"}`}
-              >
-                {money(data.result[data.day - 1])}
+              <div className="dashboard-total">
+                <div
+                  className={`dashboard-value ${data.result[data.day - 1] < 0 ? "negative" : "positive"}`}
+                >
+                  {money(data.result[data.day - 1])}
+                </div>
+                <ComparisonChange
+                  current={data.result[data.day - 1]}
+                  previous={data.previousResult[data.previousDay - 1]}
+                />
               </div>
               <div className="dashboard-comparison">
                 <div>
@@ -172,8 +205,18 @@ export function DashboardPage() {
                 </span>
                 Темп трат
               </h2>
-              <div className="dashboard-pace">
-                {money(data.expense[data.day - 1] / data.day)} / день
+              <div className="dashboard-total">
+                <div className="dashboard-pace">
+                  {money(data.expense[data.day - 1] / data.day)} / день
+                </div>
+                <ComparisonChange
+                  current={data.expense[data.day - 1] / data.day}
+                  previous={
+                    data.previousExpense[data.previousDay - 1] /
+                    data.previousDay
+                  }
+                  lowerIsBetter
+                />
               </div>
               <p className="dashboard-muted">
                 Прогноз за месяц:{" "}
@@ -204,7 +247,7 @@ export function DashboardPage() {
                 </div>
               </div>
             </Card>
-            <Card className="dashboard-wide">
+            <Card tone="dark" className="dashboard-wide dashboard-main-chart">
               <h2>
                 <span>
                   <ChartNoAxesCombined />
@@ -230,6 +273,7 @@ export function DashboardPage() {
                   <div className="dashboard-category-chart">
                     <h2>{change.name}</h2>
                     <Chart
+                      compact
                       current={change.currentValues}
                       previous={change.previousValues}
                       day={data.day}
@@ -238,18 +282,30 @@ export function DashboardPage() {
                     />
                   </div>
                   <div className="dashboard-category-summary">
-                    <div
-                      className={`dashboard-change ${change.value > change.previousValue === (change.type === "income") ? "positive" : "negative"}`}
-                    >
-                      {change.change === null
-                        ? "Новое"
-                        : `${change.change > 0 ? "+" : "−"}${Math.abs(change.change).toLocaleString("ru-RU", { maximumFractionDigits: 1 })}%`}{" "}
-                      <span aria-hidden="true">{change.emoji}</span>
+                    <div className="dashboard-highlight">
+                      <div
+                        className={`dashboard-change ${change.value > change.previousValue === (change.type === "income") ? "positive" : "negative"}`}
+                      >
+                        {change.change === null
+                          ? "Новое"
+                          : `${change.change > 0 ? "+" : "−"}${Math.abs(change.change).toLocaleString("ru-RU", { maximumFractionDigits: 1 })}%`}
+                      </div>
+                      <span
+                        className="dashboard-category-emoji"
+                        style={{ backgroundColor: change.color }}
+                        aria-hidden="true"
+                      >
+                        {change.emoji}
+                      </span>
                     </div>
                     <p className="dashboard-muted">
-                      {change.type === "income" ? "Доход" : "Расход"}:{" "}
-                      {money(change.previousValue)} → {money(change.value)} за
-                      сопоставимые периоды
+                      {change.type === "income" ? "Доход" : "Расход"}{" "}
+                      {change.value > change.previousValue
+                        ? "вырос"
+                        : "сократился"}{" "}
+                      с {money(change.previousValue)} до {money(change.value)}{" "}
+                      за {range(data.day, data.current)} по сравнению с{" "}
+                      {range(data.previousDay, data.previous)}
                     </p>
                   </div>
                 </Card>
