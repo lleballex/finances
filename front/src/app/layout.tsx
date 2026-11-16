@@ -4,8 +4,8 @@ import "./globals.css";
 import "@/shared/ui/ui.css";
 
 export const metadata: Metadata = {
-  title: "UI-kit — Финансы",
-  description: "Компоненты интерфейса приложения «Финансы»",
+  title: "Могну — Финансы",
+  description: "Учёт и анализ личных финансов",
 };
 
 export default function RootLayout({

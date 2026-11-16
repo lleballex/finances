@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createAgent } from "@ui-sdk/react/agent";
 import { expect, test } from "vitest";
-import Home from "../app/page";
+import Home from "../app/ui-kit/page";
 
 const agent = createAgent();
 
