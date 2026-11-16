@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -7,6 +9,8 @@ import {
   Tags,
 } from "lucide-react";
 import type { ReactNode } from "react";
+import { ActionMenu } from "@/shared/ui";
+import type { SessionUser } from "@/features/auth/session";
 import "./workspace.css";
 
 const navigation = [
@@ -25,9 +29,13 @@ export function isWorkspaceSection(value: string): value is WorkspaceSection {
 export function WorkspaceShell({
   section,
   children,
+  user,
+  onLogout,
 }: {
   section: WorkspaceSection;
   children: ReactNode;
+  user?: SessionUser;
+  onLogout?: () => void;
 }) {
   return (
     <div className="workspace-shell">
@@ -43,7 +51,7 @@ export function WorkspaceShell({
           {navigation.map(({ slug, label, icon: Icon }) => (
             <Link
               key={slug}
-              href={`/preview/${slug}`}
+              href={user ? `/${slug}` : `/preview/${slug}`}
               aria-current={slug === section ? "page" : undefined}
             >
               <Icon size={19} aria-hidden="true" />
@@ -51,7 +59,21 @@ export function WorkspaceShell({
             </Link>
           ))}
         </nav>
-        <div className="workspace-preview-label">Предпросмотр интерфейса</div>
+        {user ? (
+          <div className="workspace-profile">
+            <span>
+              {[user.firstName, user.lastName].filter(Boolean).join(" ") ||
+                "Пользователь"}
+            </span>
+            <ActionMenu
+              label="Меню пользователя"
+              options={[{ value: "logout", label: "Выйти" }]}
+              onAction={() => onLogout?.()}
+            />
+          </div>
+        ) : (
+          <div className="workspace-preview-label">Предпросмотр интерфейса</div>
+        )}
       </aside>
       <main className="workspace-content">{children}</main>
     </div>

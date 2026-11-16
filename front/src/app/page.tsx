@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "@/shared/ui";
+import { WelcomeAuth } from "@/features/auth/welcome-auth";
 import "./welcome.css";
 
 export default function Home() {
@@ -23,19 +23,7 @@ export default function Home() {
         <br />
         Понятная картина.
       </p>
-      <div className="welcome-auth">
-        <Button
-          className="welcome-login"
-          disabled
-          aria-describedby="auth-status"
-        >
-          <span className="welcome-ya" aria-hidden="true">
-            Я
-          </span>
-          Войти через Яндекс ID <span aria-hidden="true">↗</span>
-        </Button>
-        <span id="auth-status">Вход пока недоступен</span>
-      </div>
+      <WelcomeAuth />
     </main>
   );
 }
