@@ -52,7 +52,15 @@ export function ProtectedWorkspace({ children }: { children: ReactNode }) {
         </div>
       ) : user ? (
         children
-      ) : null}
+      ) : (
+        <div
+          className="workspace-loading"
+          role="status"
+          aria-label="Проверка сессии"
+        >
+          <span className="workspace-spinner" aria-hidden="true" />
+        </div>
+      )}
     </WorkspaceShell>
   );
 }

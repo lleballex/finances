@@ -8,18 +8,16 @@ vi.mock("next/navigation", () => ({ usePathname: () => pathname }));
 afterEach(() => vi.unstubAllGlobals());
 
 test("общая оболочка и сессия сохраняются при переходе между разделами", async () => {
-  const fetchSession = vi
-    .fn()
-    .mockResolvedValue({
-      ok: true,
-      status: 200,
-      json: async () => ({
-        id: "1",
-        firstName: "Алексей",
-        lastName: null,
-        avatarUrl: null,
-      }),
-    });
+  const fetchSession = vi.fn().mockResolvedValue({
+    ok: true,
+    status: 200,
+    json: async () => ({
+      id: "1",
+      firstName: "Алексей",
+      lastName: null,
+      avatarUrl: null,
+    }),
+  });
   vi.stubGlobal("fetch", fetchSession);
   const { rerender } = render(
     <ProtectedWorkspace>
@@ -29,8 +27,9 @@ test("общая оболочка и сессия сохраняются при 
   const navigation = screen.getByRole("navigation", {
     name: "Основная навигация",
   });
-  expect(screen.queryByText("Загрузка…")).toBeNull();
+  expect(screen.getByRole("status", { name: "Проверка сессии" })).toBeTruthy();
   await screen.findByText("Алексей");
+  expect(screen.queryByRole("status", { name: "Проверка сессии" })).toBeNull();
   pathname = "/transactions";
   rerender(
     <ProtectedWorkspace>
