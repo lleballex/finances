@@ -1,9 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { expect, test } from "vitest";
-import {
-  isWorkspaceSection,
-  WorkspaceShell,
-} from "../features/workspace/workspace-shell";
+import { isWorkspaceSection } from "../features/workspace/sections";
+import { WorkspaceShell } from "../features/workspace/workspace-shell";
 
 test("навигация показывает текущий раздел и ссылки на остальные разделы", () => {
   render(

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { ProtectedWorkspace } from "@/features/auth/protected-workspace";
-import { isWorkspaceSection } from "@/features/workspace/workspace-shell";
+import { isWorkspaceSection } from "@/features/workspace/sections";
 
 export default async function WorkspacePage({
   params,

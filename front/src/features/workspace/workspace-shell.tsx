@@ -11,6 +11,7 @@ import {
 import type { ReactNode } from "react";
 import { ActionMenu } from "@/shared/ui";
 import type { SessionUser } from "@/features/auth/session";
+import type { WorkspaceSection } from "./sections";
 import "./workspace.css";
 
 const navigation = [
@@ -19,12 +20,6 @@ const navigation = [
   { slug: "statistics", label: "Статистика", icon: ChartNoAxesCombined },
   { slug: "categories", label: "Категории", icon: Tags },
 ] as const;
-
-export type WorkspaceSection = (typeof navigation)[number]["slug"];
-
-export function isWorkspaceSection(value: string): value is WorkspaceSection {
-  return navigation.some((item) => item.slug === value);
-}
 
 export function WorkspaceShell({
   section,

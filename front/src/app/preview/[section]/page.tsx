@@ -1,8 +1,6 @@
 import { notFound } from "next/navigation";
-import {
-  isWorkspaceSection,
-  WorkspaceShell,
-} from "@/features/workspace/workspace-shell";
+import { isWorkspaceSection } from "@/features/workspace/sections";
+import { WorkspaceShell } from "@/features/workspace/workspace-shell";
 
 const titles = {
   dashboard: "Обзор",

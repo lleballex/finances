@@ -1,10 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  WorkspaceShell,
-  type WorkspaceSection,
-} from "@/features/workspace/workspace-shell";
+import { WorkspaceShell } from "@/features/workspace/workspace-shell";
+import type { WorkspaceSection } from "@/features/workspace/sections";
 import { API_URL, getSession, type SessionUser } from "./session";
 
 const titles = {
