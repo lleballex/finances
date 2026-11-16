@@ -8,7 +8,8 @@ import {
   LayoutDashboard,
   Tags,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
+import { useAccountingMode } from "@/features/accounting/accounting-mode";
 import { ActionMenu } from "@/shared/ui";
 import type { SessionUser } from "@/features/auth/session";
 import type { WorkspaceSection } from "./sections";
@@ -34,6 +35,9 @@ export function WorkspaceShell({
   onLogout?: () => void;
   preview?: boolean;
 }) {
+  useEffect(() => {
+    void useAccountingMode.persist.rehydrate();
+  }, []);
   return (
     <div className="workspace-shell">
       <aside className="workspace-sidebar">

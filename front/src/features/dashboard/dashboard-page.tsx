@@ -6,6 +6,7 @@ import {
   ChartColumnIncreasing,
 } from "lucide-react";
 import { api } from "@/shared/api/client";
+import { useAccountingMode } from "@/features/accounting/accounting-mode";
 import { Card } from "@/shared/ui";
 import { CreateTransaction } from "@/features/transactions/create-transaction";
 import type {
@@ -131,13 +132,12 @@ function Chart({
   );
 }
 export function DashboardPage() {
+  const mode = useAccountingMode((state) => state.mode);
   const query = useQuery({
     queryKey: ["dashboard-transactions"],
     queryFn: loadTransactions,
   });
-  const data = query.data
-    ? dashboardData(query.data, new Date(), "date")
-    : null;
+  const data = query.data ? dashboardData(query.data, new Date(), mode) : null;
   const refresh = () => {
     void query.refetch();
   };

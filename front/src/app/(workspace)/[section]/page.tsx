@@ -1,3 +1,4 @@
+import { StatisticsPage } from "@/features/statistics/statistics-page";
 import { DashboardPage } from "@/features/dashboard/dashboard-page";
 import { notFound } from "next/navigation";
 import { CategoriesPage } from "@/features/categories/categories-page";
@@ -18,6 +19,7 @@ export default async function WorkspacePage({
 }) {
   const { section } = await params;
   if (!isWorkspaceSection(section)) notFound();
+  if (section === "statistics") return <StatisticsPage />;
   if (section === "dashboard") return <DashboardPage />;
   if (section === "transactions") return <TransactionsPage />;
   if (section === "categories") return <CategoriesPage />;
