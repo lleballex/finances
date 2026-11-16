@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, expect, test, vi } from "vitest";
 import { Providers } from "../app/providers";
@@ -20,7 +20,7 @@ test("при получении категорий остальные поля �
   expect(
     screen.getByRole("dialog", { name: "Добавить транзакцию" }),
   ).toBeTruthy();
-  expect(screen.getByLabelText("Загрузка категорий")).toBeTruthy();
+  expect(screen.getByLabelText("Загрузка")).toBeTruthy();
   expect(screen.getByRole("textbox", { name: "Сумма" })).toBeTruthy();
   expect(screen.getByRole("textbox", { name: "Описание" })).toBeTruthy();
   expect(screen.queryByText(/Получаем категории/)).toBeNull();
@@ -128,17 +128,16 @@ test("дата обновляет период до ручного измене�
   await user.type(date, "05.10.2026");
   await user.tab();
   expect(
-    (screen.getByLabelText("Учётный период") as HTMLInputElement).value,
-  ).toBe("2026-10");
-  fireEvent.input(screen.getByLabelText("Учётный период"), {
-    target: { value: "2026-08" },
-  });
+    screen.getByRole("button", { name: /Учётный период Октябрь 2026/ }),
+  ).toBeTruthy();
+  await user.click(screen.getByRole("button", { name: /Учётный период/ }));
+  await user.click(screen.getByRole("button", { name: "Август" }));
   await user.clear(date);
   await user.type(date, "06.09.2026");
   await user.tab();
   expect(
-    (screen.getByLabelText("Учётный период") as HTMLInputElement).value,
-  ).toBe("2026-08");
+    screen.getByRole("button", { name: /Учётный период Август 2026/ }),
+  ).toBeTruthy();
 });
 
 test("ошибка категорий не закрывает и не заменяет форму", async () => {

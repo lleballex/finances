@@ -12,6 +12,7 @@ import {
   Button,
   DateField,
   Modal,
+  MonthField,
   SelectField,
   SwitchControl,
   TextField,
@@ -191,11 +192,10 @@ export function CreateTransaction({ onCreated }: { onCreated: () => void }) {
           control={form.control}
           name="accountingPeriod"
           render={({ field }) => (
-            <TextField
+            <MonthField
               label="Учётный период"
-              type="month"
               value={field.value}
-              onValueChange={(value) => {
+              onChange={(value) => {
                 field.onChange(value);
                 setPeriodOverridden(true);
               }}

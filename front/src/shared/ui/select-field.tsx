@@ -53,7 +53,7 @@ export function SelectField({
             <LoaderCircle
               size={18}
               className="ui-spinner"
-              aria-label="Загрузка категорий"
+              aria-label="Загрузка"
             />
           ) : (
             <ChevronDown size={18} aria-hidden="true" />

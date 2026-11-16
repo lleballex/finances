@@ -1,5 +1,10 @@
 import Image from "next/image";
-import { DateExample, DateRangeExample } from "./date-range-example";
+import {
+  DateExample,
+  DateRangeExample,
+  MonthExample,
+  SharedComponentsExample,
+} from "./date-range-example";
 import {
   ArrowUpRight,
   CircleHelp,
@@ -131,6 +136,10 @@ export default function Home() {
               </div>
             </div>
             <div className="kit-panel wide">
+              <h3>Модальное окно и раскрывающийся раздел</h3>
+              <SharedComponentsExample />
+            </div>
+            <div className="kit-panel wide">
               <h3>Диалог</h3>
               <p className="caption">
                 Для подтверждения действия. Закрывается по Escape и кнопке
@@ -191,7 +200,13 @@ export default function Home() {
                   disabled
                   options={options}
                 />
+                <SelectField
+                  label="Загрузка списка"
+                  loading
+                  options={options}
+                />
                 <DateExample />
+                <MonthExample />
                 <DateRangeExample />
                 <CheckControl label="Учитывать в статистике" defaultChecked />
                 <CheckControl label="Недоступный вариант" disabled />

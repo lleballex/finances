@@ -11,3 +11,4 @@ export * from "./date-range-field";
 export * from "./collapsible-section";
 export * from "./modal";
 export * from "./date-field";
+export * from "./month-field";
