@@ -78,10 +78,10 @@
 .statistics-totals strong {
   display: block;
   margin-top: 16px;
-  font-size: clamp(20px, 2.3vw, 33px);
+  font-size: clamp(16px, 2.3vw, 33px);
   font-weight: 800;
   letter-spacing: -1px;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 .statistics-positive {
@@ -184,6 +184,9 @@
 .statistics-donut [role="button"]:focus-visible {
   outline: 3px solid #879b24;
   outline-offset: 3px;
+}
+.statistics-donut [role="button"]:focus:not(:focus-visible) {
+  outline: none;
 }
 .statistics-series i,
 .statistics-distribution i {

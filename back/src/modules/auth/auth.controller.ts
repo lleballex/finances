@@ -66,6 +66,17 @@ export class AuthController {
     response.redirect(`${process.env.FRONTEND_ORIGIN}/dashboard`);
   }
 
+  @Get("dev-login")
+  async devLogin(@Res() response: Response) {
+    if (process.env.DEV_LOGIN !== "true") throw new ForbiddenException();
+    const token = await this.auth.devSignIn();
+    response.cookie("session", token, {
+      ...options,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+    response.redirect(`${process.env.FRONTEND_ORIGIN}/dashboard`);
+  }
+
   @Get("me")
   me(@Req() request: Request) {
     return this.auth.getUser(cookie(request, "session"));

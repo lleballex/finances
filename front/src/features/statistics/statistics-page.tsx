@@ -10,7 +10,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { api } from "@/shared/api/client";
-import { Card, Button, SelectField } from "@/shared/ui";
+import { Card, Button, SelectField, DateRangeField } from "@/shared/ui";
 import { useAccountingMode } from "@/features/accounting/accounting-mode";
 import { CreateTransaction } from "@/features/transactions/create-transaction";
 import type {
@@ -28,12 +28,6 @@ import "./statistics.css";
 
 const money = (cents: number) =>
   `${cents < 0 ? "−" : ""}${(Math.abs(cents) / 100).toLocaleString("ru-RU", { maximumFractionDigits: 2 })} ₽`;
-const monthLabel = (month: string) =>
-  new Intl.DateTimeFormat("ru-RU", {
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(new Date(`${month}-01T00:00:00Z`));
 async function loadTransactions() {
   const items: Transaction[] = [];
   let page = 1,
@@ -81,7 +75,7 @@ function LineChart({
     min = Math.min(...values),
     span = max - min || 1;
   const x = (index: number) =>
-    keys.length === 1 ? 275 : 65 + (index * 415) / Math.max(keys.length - 1, 1);
+    keys.length === 1 ? 271 : 44 + (index * 454) / Math.max(keys.length - 1, 1);
   const y = (value: number) => 165 - ((value - min) * 140) / span;
   const show = Math.max(1, Math.ceil(keys.length / 7));
   return (
@@ -94,12 +88,12 @@ function LineChart({
       {[0, 1, 2, 3].map((i) => (
         <g key={i}>
           <line
-            x1="65"
-            x2="480"
+            x1="44"
+            x2="498"
             y1={25 + (i * 140) / 3}
             y2={25 + (i * 140) / 3}
           />
-          <text x="57" y={29 + (i * 140) / 3} textAnchor="end">
+          <text x="38" y={29 + (i * 140) / 3} textAnchor="end">
             {(max === min ? 0 : (max - (i * span) / 3) / 100).toLocaleString(
               "ru-RU",
               { maximumFractionDigits: 2 },
@@ -395,7 +389,8 @@ const noCategories: Category[] = [];
 export function StatisticsPage() {
   const mode = useAccountingMode((state) => state.mode),
     setMode = useAccountingMode((state) => state.setMode);
-  const [period, setPeriod] = useState("all"),
+  const [rangeFrom, setRangeFrom] = useState(""),
+    [rangeTo, setRangeTo] = useState(""),
     [interval, setInterval] = useState<Interval>("month"),
     [operation, setOperation] = useState<OperationType>("all");
   const transactions = useQuery({
@@ -408,32 +403,18 @@ export function StatisticsPage() {
   });
   const items = transactions.data ?? noTransactions,
     categoryList = categories.data ?? noCategories;
-  const months = useMemo(
-    () =>
-      [
-        ...new Set(
-          items.map((item) =>
-            mode === "date" ? item.date.slice(0, 7) : item.period,
-          ),
-        ),
-      ]
-        .sort()
-        .reverse(),
-    [items, mode],
-  );
-  const effectivePeriod =
-    period === "all" || months.includes(period) ? period : "all";
   const data = useMemo(
     () =>
       statisticsData(
         items,
         categoryList,
         mode,
-        effectivePeriod,
+        rangeFrom,
+        rangeTo,
         interval,
         operation,
       ),
-    [items, categoryList, mode, effectivePeriod, interval, operation],
+    [items, categoryList, mode, rangeFrom, rangeTo, interval, operation],
   );
   const refresh = () => {
     void transactions.refetch();
@@ -477,14 +458,14 @@ export function StatisticsPage() {
                   setInterval("month");
               }}
             />
-            <SelectField
+            <DateRangeField
               label="Период"
-              value={effectivePeriod}
-              options={[
-                { value: "all", label: "Всё время" },
-                ...months.map((value) => ({ value, label: monthLabel(value) })),
-              ]}
-              onValueChange={(value) => value && setPeriod(value)}
+              from={rangeFrom}
+              to={rangeTo}
+              onChange={(from, to) => {
+                setRangeFrom(from);
+                setRangeTo(to);
+              }}
             />
             <SelectField
               label="Временной разрез"

@@ -83,6 +83,11 @@
   padding: 9px 20px 9px 9px;
   border-radius: 99px;
 }
+.welcome .welcome-dev-login {
+  height: auto;
+  padding: 12px 20px;
+  border-radius: 99px;
+}
 .welcome-ya {
   display: grid;
   width: 40px;

@@ -64,6 +64,21 @@ export class AuthService {
     return this.jwt.signAsync({ sub: user.id });
   }
 
+  async devSignIn(): Promise<string> {
+    await this.users.upsert(
+      {
+        yandexId: "dev",
+        email: "dev@localhost",
+        firstName: "Алексей",
+        lastName: "Лебедев",
+        avatarUrl: null,
+      },
+      ["yandexId"],
+    );
+    const user = await this.users.findOneByOrFail({ yandexId: "dev" });
+    return this.jwt.signAsync({ sub: user.id });
+  }
+
   async getUser(token: string | undefined) {
     if (!token) throw new UnauthorizedException();
     try {

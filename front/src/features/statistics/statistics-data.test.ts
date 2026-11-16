@@ -47,7 +47,8 @@ describe("statisticsData", () => {
       items,
       categories,
       "period",
-      "2025-01",
+      "2025-01-01",
+      "",
       "month",
       "all",
     );
@@ -59,7 +60,8 @@ describe("statisticsData", () => {
       items,
       categories,
       "date",
-      "2025-01",
+      "2025-01-01",
+      "2025-01-31",
       "day",
       "irregular",
     );

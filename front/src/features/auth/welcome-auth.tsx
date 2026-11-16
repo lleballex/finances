@@ -13,6 +13,7 @@ export function WelcomeAuth() {
       })
       .catch(() => setError(true));
   }, []);
+  const devLogin = process.env.NEXT_PUBLIC_DEV_LOGIN === "true";
   return (
     <div className="welcome-auth">
       <Button
@@ -26,6 +27,17 @@ export function WelcomeAuth() {
         </span>
         Войти через Яндекс ID <span aria-hidden="true">↗</span>
       </Button>
+      {devLogin && (
+        <Button
+          variant="secondary"
+          className="welcome-dev-login"
+          onClick={() => {
+            window.location.replace(`${API_URL}/auth/dev-login`);
+          }}
+        >
+          Войти в демо-режиме
+        </Button>
+      )}
       {error && <span>Сервер авторизации недоступен</span>}
     </div>
   );

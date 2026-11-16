@@ -21,10 +21,15 @@ export function statisticsData(
   items: Transaction[],
   categories: Category[],
   mode: AccountingMode,
-  period: string,
+  periodFrom: string,
+  periodTo: string,
   interval: Interval,
   operation: OperationType,
 ) {
+  const fromKey = mode === "period" ? periodFrom.slice(0, 7) : periodFrom;
+  const toKey = mode === "period" ? periodTo.slice(0, 7) : periodTo;
+  const inRange = (value: string) =>
+    (!fromKey || value >= fromKey) && (!toKey || value <= toKey);
   const categoryById = new Map(
     categories.map((category) => [category.id, category]),
   );
@@ -34,7 +39,7 @@ export function statisticsData(
     expense = 0;
   for (const item of items) {
     const date = mode === "period" ? item.period : item.date;
-    if (period !== "all" && date.slice(0, 7) !== period) continue;
+    if (!inRange(date)) continue;
     if (operation !== "all" && item.regular !== (operation === "regular"))
       continue;
     const bucket =
@@ -69,16 +74,20 @@ export function statisticsData(
   const observed = [...buckets.keys()].sort();
   const keys: string[] = [];
   if (observed.length) {
-    const first =
-      period !== "all" && interval === "day" ? `${period}-01` : observed[0];
-    const last =
-      period !== "all" && interval === "day"
-        ? new Date(
-            Date.UTC(Number(period.slice(0, 4)), Number(period.slice(5, 7)), 0),
-          )
-            .toISOString()
-            .slice(0, 10)
-        : observed[observed.length - 1];
+    const first = fromKey
+      ? interval === "year"
+        ? fromKey.slice(0, 4)
+        : interval === "month"
+          ? fromKey.slice(0, 7)
+          : fromKey
+      : observed[0];
+    const last = toKey
+      ? interval === "year"
+        ? toKey.slice(0, 4)
+        : interval === "month"
+          ? toKey.slice(0, 7)
+          : toKey
+      : observed[observed.length - 1];
     const cursor = new Date(
       `${first}${interval === "year" ? "-01-01" : interval === "month" ? "-01" : ""}T00:00:00Z`,
     );
@@ -105,7 +114,7 @@ export function statisticsData(
     items: items.filter((item) => {
       const date = mode === "period" ? item.period : item.date;
       return (
-        (period === "all" || date.slice(0, 7) === period) &&
+        inRange(date) &&
         (operation === "all" || item.regular === (operation === "regular"))
       );
     }),
