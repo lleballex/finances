@@ -44,23 +44,8 @@ export function DateField({
         <DatePickerContent
           className="ui-date-range-popup"
           side="bottom"
-          align="end"
+          align="center"
         >
-          <div className="ui-calendar-header">
-            <CalendarPrevious
-              className="ui-calendar-nav"
-              aria-label="Предыдущий месяц"
-            >
-              <ChevronLeft size={18} />
-            </CalendarPrevious>
-            <CalendarHeading className="ui-calendar-heading" />
-            <CalendarNext
-              className="ui-calendar-nav"
-              aria-label="Следующий месяц"
-            >
-              <ChevronRight size={18} />
-            </CalendarNext>
-          </div>
           <CalendarGrid className="ui-calendar-grid">
             <CalendarWeekdays>
               {(index) => (
@@ -76,6 +61,21 @@ export function DateField({
               )}
             </CalendarWeeks>
           </CalendarGrid>
+          <div className="ui-calendar-header">
+            <CalendarPrevious
+              className="ui-calendar-nav"
+              aria-label="Предыдущий месяц"
+            >
+              <ChevronLeft size={18} aria-hidden="true" />
+            </CalendarPrevious>
+            <CalendarHeading className="ui-calendar-heading" />
+            <CalendarNext
+              className="ui-calendar-nav"
+              aria-label="Следующий месяц"
+            >
+              <ChevronRight size={18} aria-hidden="true" />
+            </CalendarNext>
+          </div>
         </DatePickerContent>
       </DatePicker>
     </div>

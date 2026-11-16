@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { DateRangeExample } from "./date-range-example";
+import { DateExample, DateRangeExample } from "./date-range-example";
 import {
   ArrowUpRight,
   CircleHelp,
@@ -191,6 +191,7 @@ export default function Home() {
                   disabled
                   options={options}
                 />
+                <DateExample />
                 <DateRangeExample />
                 <CheckControl label="Учитывать в статистике" defaultChecked />
                 <CheckControl label="Недоступный вариант" disabled />

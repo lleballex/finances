@@ -1,7 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { DateRangeField } from "@/shared/ui";
+import { DateField, DateRangeField } from "@/shared/ui";
+
+export function DateExample() {
+  const [date, setDate] = useState("");
+  return <DateField label="Дата" value={date} onChange={setDate} />;
+}
 
 export function DateRangeExample() {
   const [range, setRange] = useState<[string, string]>(["", ""]);

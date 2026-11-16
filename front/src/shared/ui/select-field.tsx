@@ -60,7 +60,7 @@ export function SelectField({
           )}
         </SelectTrigger>
       </div>
-      <SelectContent className="ui-popup" ref={popupRef}>
+      <SelectContent className="ui-popup" ref={popupRef} align="center">
         {options.map((option) => (
           <SelectItem
             className="ui-popup-item"

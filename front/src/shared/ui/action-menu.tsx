@@ -20,7 +20,7 @@ export function ActionMenu({
       <MenuTrigger className="ui-button ui-button--icon" aria-label={label}>
         <MoreHorizontal size={20} aria-hidden="true" />
       </MenuTrigger>
-      <MenuContent className="ui-popup" ref={popupRef}>
+      <MenuContent className="ui-popup" ref={popupRef} align="center">
         {options.map((option) => (
           <MenuItem
             className="ui-popup-item"
