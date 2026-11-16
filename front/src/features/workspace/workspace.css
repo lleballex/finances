@@ -16,33 +16,57 @@
   display: flex;
   min-height: 0;
   flex-direction: column;
-  padding: 28px 16px 20px;
+  padding: 28px 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 40px;
   background: #fafaf8;
 }
 .workspace-brand {
   display: block;
-  padding: 0 8px 38px;
+  flex: none;
+  padding: 0 10px 35px;
 }
-.workspace-brand img {
-  width: 150px;
+.workspace-brand-logo {
+  display: block;
+  position: relative;
+  width: 120px;
+  height: 42px;
+  overflow: hidden;
+  mix-blend-mode: multiply;
+}
+.workspace-brand-logo img {
+  position: absolute;
+  display: block;
+  max-width: none;
+  width: 226.67px;
   height: auto;
+  left: -53.33px;
+  top: -16.67px;
 }
 .workspace-nav {
   display: grid;
-  gap: 8px;
+  gap: 7px;
+  flex-shrink: 0;
 }
 .workspace-nav a {
   display: flex;
   min-height: 48px;
   align-items: center;
-  gap: 12px;
-  padding: 0 16px;
+  gap: 14px;
+  padding: 0 15px;
   border-radius: 999px;
   color: #171717;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
+}
+.workspace-nav-icon {
+  display: inline-flex;
+  width: 19px;
+  height: 19px;
+  align-items: center;
+  justify-content: center;
+  flex: none;
 }
 .workspace-nav a:hover {
   background: #eeefeb;
@@ -65,7 +89,14 @@
 .workspace-content h1 {
   margin: 0 0 28px;
   font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: -1px;
   font-weight: 800;
+  -webkit-text-stroke: 0.8px currentColor;
+  transform: scaleX(1.14);
+  transform-origin: left center;
+  width: fit-content;
+  max-width: 87.7%;
 }
 .workspace-empty {
   padding: 24px;
@@ -79,12 +110,32 @@
 .workspace-profile {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin: auto -16px 0;
-  padding: 20px 16px 0;
-  border-top: 1px solid #e3e4de;
+  gap: 11px;
+  margin: auto -14px 0;
+  padding: 18px 18px 0;
+  border-top: 1px solid #e7e9e3;
+  font-size: 14px;
   font-weight: 700;
+}
+
+.workspace-avatar {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  place-items: center;
+  border-radius: 50%;
+  background: #edefe6;
+}
+.workspace-profile-name {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.workspace-profile .ui-button--icon {
+  flex: none;
 }
 
 .workspace-loading {

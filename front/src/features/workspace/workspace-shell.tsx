@@ -42,7 +42,9 @@ export function WorkspaceShell({
           href="/"
           aria-label="Могну Финансы — на главную"
         >
-          <Image src="/logo.png" alt="" width={150} height={50} />
+          <span className="workspace-brand-logo">
+            <Image src="/logo.png" alt="" width={680} height={225} />
+          </span>
         </Link>
         <nav className="workspace-nav" aria-label="Основная навигация">
           {navigation.map(({ slug, label, icon: Icon }) => (
@@ -51,16 +53,23 @@ export function WorkspaceShell({
               href={preview ? `/preview/${slug}` : `/${slug}`}
               aria-current={slug === section ? "page" : undefined}
             >
-              <Icon size={19} aria-hidden="true" />
+              <span className="workspace-nav-icon">
+                <Icon size={14} aria-hidden="true" />
+              </span>
               {label}
             </Link>
           ))}
         </nav>
         {user ? (
           <div className="workspace-profile">
-            <span>
-              {[user.firstName, user.lastName].filter(Boolean).join(" ") ||
-                "Пользователь"}
+            <span className="workspace-avatar" aria-hidden="true">
+              {[user.firstName, user.lastName]
+                .filter(Boolean)
+                .map((name) => name?.trim().charAt(0).toLocaleUpperCase("ru"))
+                .join("") || "П"}
+            </span>
+            <span className="workspace-profile-name">
+              {user.firstName || user.lastName || "Пользователь"}
             </span>
             <ActionMenu
               label="Меню пользователя"
