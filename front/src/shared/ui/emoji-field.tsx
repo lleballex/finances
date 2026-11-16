@@ -11,17 +11,6 @@ import {
 import * as Picker from "emoji-picker-react/primitives";
 import emojiData from "emoji-picker-react/data/emojis-ru";
 
-function EmojiCategoryHeader({
-  category,
-  ...props
-}: Picker.CategoryHeaderRenderProps) {
-  return (
-    <h2 {...props}>
-      <span>{category.name}</span>
-    </h2>
-  );
-}
-
 export function EmojiField({
   label,
   placeholder = "Выберите эмодзи",
@@ -78,11 +67,11 @@ export function EmojiField({
               setOpen(false);
             }}
           >
-            <Picker.SearchInput className="ui-input" />
+            <div className="ui-emoji-search">
+              <Picker.SearchInput className="ui-input" />
+            </div>
             <Picker.Viewport>
-              <Picker.List
-                components={{ CategoryHeader: EmojiCategoryHeader }}
-              />
+              <Picker.List />
               <Picker.Empty />
             </Picker.Viewport>
           </Picker.Root>

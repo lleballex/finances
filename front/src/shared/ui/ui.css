@@ -803,28 +803,22 @@
   --epr-emoji-padding: 5px;
   --epr-category-padding: 0;
   --epr-horizontal-padding: 0px;
+  --epr-category-label-height: 0px;
   width: 266px;
   height: 340px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+.ui-emoji-search {
+  padding: 6px;
+}
 .ui-emoji-picker [data-epr-part="viewport"] {
   flex: 1;
   min-height: 0;
 }
 .ui-emoji-picker [data-epr-part="category-label"] {
-  background: #fafaf8;
-  color: #171717;
-  font-size: 14px;
-  font-weight: 700;
-  padding: 8px 0;
-}
-.ui-emoji-picker [data-epr-part="category-label"] span {
-  display: inline-block;
-}
-.ui-emoji-picker [data-epr-part="category-label"] span::first-letter {
-  text-transform: uppercase;
+  display: none;
 }
 .ui-emoji-picker [data-epr-part="emoji"] {
   border: 0;
