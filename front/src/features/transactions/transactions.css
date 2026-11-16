@@ -1,6 +1,7 @@
 .transactions-page {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 240px;
+  grid-template-rows: auto 1fr;
   column-gap: 38px;
   align-items: start;
 }

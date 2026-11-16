@@ -57,7 +57,7 @@ export function DateRangeField({
         </PopoverTrigger>
         <PopoverContent
           className="ui-date-range-popup"
-          side="left"
+          side="bottom"
           align="end"
           sideOffset={8}
         >
