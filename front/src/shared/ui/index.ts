@@ -13,3 +13,4 @@ export * from "./modal";
 export * from "./date-field";
 export * from "./month-field";
 export * from "./color-field";
+export * from "./emoji-field";

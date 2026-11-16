@@ -1,6 +1,7 @@
 import Image from "next/image";
 import {
   DateExample,
+  EmojiExample,
   DateRangeExample,
   MonthExample,
   SharedComponentsExample,
@@ -206,6 +207,7 @@ export default function Home() {
                   loading
                   options={options}
                 />
+                <EmojiExample />
                 <ColorField label="Цвет" />
                 <ColorField label="Недоступный цвет" disabled />
                 <DateExample />

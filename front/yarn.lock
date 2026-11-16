@@ -2364,6 +2364,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"emoji-picker-react@npm:^5.1.4":
+  version: 5.1.4
+  resolution: "emoji-picker-react@npm:5.1.4"
+  dependencies:
+    shipstyles: "npm:1.0.0"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10c0/13fd0d82470071854b1484ce4a8982eb54f39e60130e86db41ed15c49e7469efd0148021998234910ac352a4f71eaa3798bc6fcc2d7d6820abe76c20d2ec6129
+  languageName: node
+  linkType: hard
+
 "emoji-regex@npm:^9.2.2":
   version: 9.2.2
   resolution: "emoji-regex@npm:9.2.2"
@@ -2975,6 +2986,7 @@ __metadata:
     "@ui-sdk/core": "npm:0.1.0-beta.3"
     "@ui-sdk/react": "npm:0.1.0-beta.3"
     axios: "npm:^1.21.1"
+    emoji-picker-react: "npm:^5.1.4"
     eslint: "npm:^9"
     eslint-config-next: "npm:^16.4.6"
     jsdom: "npm:^31.0.1"
@@ -4949,6 +4961,13 @@ __metadata:
   version: 3.0.0
   resolution: "shebang-regex@npm:3.0.0"
   checksum: 10c0/1dbed0726dd0e1152a92696c76c7f06084eb32a90f0528d11acd764043aacf76994b2fb30aa1291a21bd019d6699164d048286309a278855ee7bec06cf6fb690
+  languageName: node
+  linkType: hard
+
+"shipstyles@npm:1.0.0":
+  version: 1.0.0
+  resolution: "shipstyles@npm:1.0.0"
+  checksum: 10c0/615588d51212e7ecef14142cf6b2ef6cd50ee5c6811930c0a7554c1fc44cae908c5a6b085ef26593da6ad2ef21329254ecd55166eb6616ce7e112ea76fa0238f
   languageName: node
   linkType: hard
 

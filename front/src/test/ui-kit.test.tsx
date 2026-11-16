@@ -123,3 +123,18 @@ test("цвет можно изменить в попапе и закрыть с 
       .disabled,
   ).toBe(true);
 });
+
+test("поиск эмодзи на русском и выбор с клавиатуры", async () => {
+  render(<Home />);
+  const user = userEvent.setup();
+  const trigger = screen.getByRole("button", { name: "Эмодзи" });
+  await user.click(trigger);
+  const search = screen.getByRole("combobox", { name: "Поиск эмодзи" });
+  await user.type(search, "яблоко");
+  expect(
+    await screen.findByRole("gridcell", { name: "красное яблоко" }),
+  ).toBeTruthy();
+  await user.keyboard("{ArrowDown}{Enter}");
+  await waitFor(() => expect(trigger.textContent).toContain("🍎"));
+  expect(screen.queryByRole("combobox", { name: "Поиск эмодзи" })).toBeNull();
+});

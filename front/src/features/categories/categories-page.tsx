@@ -6,6 +6,7 @@ import { LoaderCircle, Plus } from "lucide-react";
 import { api } from "@/shared/api/client";
 import {
   Button,
+  EmojiField,
   Modal,
   SelectField,
   SwitchControl,
@@ -22,20 +23,6 @@ type Category = {
   isRegular: boolean;
   parentId: string | null;
 };
-const emojis = [
-  "🥑",
-  "🛒",
-  "☕",
-  "🍽️",
-  "🚕",
-  "🏠",
-  "📱",
-  "✳️",
-  "🎧",
-  "💼",
-  "💻",
-  "✨",
-];
 const colors = [
   { value: "#dce9c8", label: "Зелёный" },
   { value: "#f1dfce", label: "Персиковый" },
@@ -145,13 +132,7 @@ export function CategoriesPage() {
                 setParentId(value === "none" ? "" : (value ?? ""))
               }
             />
-            <SelectField
-              label="Эмодзи"
-              placeholder="Выберите эмодзи"
-              value={emoji || null}
-              options={emojis.map((value) => ({ value, label: value }))}
-              onValueChange={(value) => setEmoji(value ?? "")}
-            />
+            <EmojiField label="Эмодзи" value={emoji} onValueChange={setEmoji} />
             <SelectField
               label="Цвет"
               placeholder="Выберите цвет"

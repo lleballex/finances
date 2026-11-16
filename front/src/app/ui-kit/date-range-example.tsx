@@ -7,6 +7,7 @@ import {
   DateRangeField,
   Modal,
   MonthField,
+  EmojiField,
 } from "@/shared/ui";
 
 export function DateExample() {
@@ -70,4 +71,9 @@ export function SharedComponentsExample() {
       </CollapsibleSection>
     </div>
   );
+}
+
+export function EmojiExample() {
+  const [value, setValue] = useState("");
+  return <EmojiField label="Эмодзи" value={value} onValueChange={setValue} />;
 }
