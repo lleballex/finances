@@ -1,5 +1,8 @@
 import {
   BadRequestException,
+  ForbiddenException,
+  Body,
+  Post,
   Controller,
   Get,
   Query,
@@ -8,6 +11,9 @@ import {
 import { Type } from "class-transformer";
 import {
   IsDateString,
+  IsBoolean,
+  IsUUID,
+  Matches,
   IsIn,
   IsInt,
   IsOptional,
@@ -29,12 +35,55 @@ class TransactionQuery {
   @IsOptional() @IsIn(["day", "month"]) grouping: "day" | "month" = "day";
 }
 
+class CreateTransactionDto {
+  @IsUUID() categoryId!: string;
+  @IsString()
+  @Matches(/^(?!0+(?:\.0{1,2})?$)\d{1,10}(?:\.\d{1,2})?$/)
+  amount!: string;
+  @IsDateString({ strict: true })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
+  operationDate!: string;
+  @IsDateString({ strict: true })
+  @Matches(/^\d{4}-\d{2}-01$/)
+  accountingPeriod!: string;
+  @IsOptional() @IsString() description?: string;
+  @IsOptional() @IsBoolean() isRegular?: boolean;
+}
+
 @Controller("transactions")
 export class TransactionsController {
   constructor(
     private readonly auth: AuthService,
     private readonly db: DataSource,
   ) {}
+
+  @Post()
+  async create(@Req() request: Request, @Body() input: CreateTransactionDto) {
+    if (request.headers.origin !== process.env.FRONTEND_ORIGIN)
+      throw new ForbiddenException();
+    const token = request.headers.cookie
+      ?.split(";")
+      .map((part) => part.trim())
+      .find((part) => part.startsWith("session="))
+      ?.slice(8);
+    const user = await this.auth.getUser(token);
+    const rows = await this.db.query(
+      `INSERT INTO "transaction" (category_id, amount, operation_date, accounting_period, description, is_regular)
+      SELECT c.id, CASE WHEN c.type = 'expense' THEN -$3::numeric ELSE $3::numeric END, $4::date, $5::date, $6, COALESCE($7::boolean, c.is_regular)
+      FROM category c WHERE c.id = $1 AND c.user_id = $2 RETURNING id`,
+      [
+        input.categoryId,
+        user.id,
+        input.amount,
+        input.operationDate,
+        input.accountingPeriod,
+        input.description?.trim() || null,
+        input.isRegular ?? null,
+      ],
+    );
+    if (!rows.length) throw new BadRequestException("Категория недоступна");
+    return { id: rows[0].id };
+  }
 
   @Get()
   async list(@Req() request: Request, @Query() query: TransactionQuery) {

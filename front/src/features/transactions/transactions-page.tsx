@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDown, ArrowUp, LoaderCircle, Plus } from "lucide-react";
+import { ArrowDown, ArrowUp, LoaderCircle } from "lucide-react";
 import { Button, SegmentedControl } from "@/shared/ui";
 import { API_URL } from "@/features/auth/session";
 import type { Transaction, TransactionsResponse } from "./types";
+import { CreateTransaction } from "./create-transaction";
 import { TransactionFilters } from "./transaction-filters";
 import { TransactionGroup } from "./transaction-group";
 import "./transactions.css";
@@ -26,6 +27,7 @@ export function TransactionsPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [revision, setRevision] = useState(0);
   const sentinel = useRef<HTMLDivElement>(null);
   const requestController = useRef<AbortController | null>(null);
 
@@ -71,7 +73,7 @@ export function TransactionsPage() {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [grouping, query, from, to]);
+  }, [grouping, query, from, to, revision]);
 
   useEffect(() => {
     const target = sentinel.current;
@@ -193,14 +195,9 @@ export function TransactionsPage() {
         <div ref={sentinel} />
       </section>
       <aside className="transactions-aside">
-        <Button
-          className="transactions-add"
-          disabled
-          title="Создание транзакций пока недоступно"
-        >
-          <Plus size={20} />
-          Добавить транзакцию
-        </Button>
+        <CreateTransaction
+          onCreated={() => setRevision((value) => value + 1)}
+        />
         <TransactionFilters
           query={query}
           setQuery={setQuery}

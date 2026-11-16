@@ -9,7 +9,7 @@ import {
   SelectValue,
   type SelectProps,
 } from "@ui-sdk/react/select";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LoaderCircle } from "lucide-react";
 import type { Option } from "./types";
 import { usePopupIndicator } from "./popup-indicator";
 
@@ -19,6 +19,7 @@ export function SelectField({
   placeholder = "Выберите",
   defaultValue,
   disabled,
+  loading = false,
   value,
   onValueChange,
 }: {
@@ -27,6 +28,7 @@ export function SelectField({
   placeholder?: string;
   defaultValue?: string;
   disabled?: boolean;
+  loading?: boolean;
   value?: string | null;
   onValueChange?: Extract<
     SelectProps<string>,
@@ -39,7 +41,7 @@ export function SelectField({
       items={options}
       placeholder={placeholder}
       defaultValue={defaultValue}
-      disabled={disabled}
+      disabled={disabled || loading}
       value={value}
       onValueChange={onValueChange}
     >
@@ -47,7 +49,15 @@ export function SelectField({
         <SelectLabel className="ui-label">{label}</SelectLabel>
         <SelectTrigger className="ui-input ui-select-trigger">
           <SelectValue />
-          <ChevronDown size={18} aria-hidden="true" />
+          {loading ? (
+            <LoaderCircle
+              size={18}
+              className="ui-spinner"
+              aria-label="Загрузка категорий"
+            />
+          ) : (
+            <ChevronDown size={18} aria-hidden="true" />
+          )}
         </SelectTrigger>
       </div>
       <SelectContent className="ui-popup" ref={popupRef}>

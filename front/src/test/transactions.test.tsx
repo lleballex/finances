@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { createAgent } from "@ui-sdk/react/agent";
 import { afterEach, expect, test, vi } from "vitest";
+import { Providers } from "../app/providers";
 import { TransactionsPage } from "../features/transactions/transactions-page";
 
 afterEach(() => vi.unstubAllGlobals());
@@ -31,7 +32,11 @@ test("список получает операции от API, позволяе�
     };
   });
   vi.stubGlobal("fetch", fetchTransactions);
-  render(<TransactionsPage />);
+  render(
+    <Providers>
+      <TransactionsPage />
+    </Providers>,
+  );
   expect(await screen.findByText("Кофе")).toBeTruthy();
   expect(fetchTransactions).toHaveBeenCalledWith(
     expect.stringContaining("/transactions?"),
@@ -59,17 +64,19 @@ test("список получает операции от API, позволяе�
 test("пустой ответ API показывает пустое состояние", async () => {
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          data: [],
-          meta: { page: 1, limit: 20, total: 0 },
-          groupTotals: {},
-        }),
+    vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        data: [],
+        meta: { page: 1, limit: 20, total: 0 },
+        groupTotals: {},
       }),
+    }),
   );
-  render(<TransactionsPage />);
+  render(
+    <Providers>
+      <TransactionsPage />
+    </Providers>,
+  );
   expect(await screen.findByText("Транзакции не найдены")).toBeTruthy();
 });

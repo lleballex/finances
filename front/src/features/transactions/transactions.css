@@ -206,3 +206,7 @@
     animation: none;
   }
 }
+.transactions-aside > .ui-button {
+  justify-self: end;
+  white-space: nowrap;
+}

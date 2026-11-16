@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { CategoriesController } from "./modules/categories/categories.controller";
 import { TransactionsController } from "./modules/transactions/transactions.controller";
 import { AuthController } from "./modules/auth/auth.controller";
 import { AuthService } from "./modules/auth/auth.service";
@@ -20,7 +21,7 @@ import { User } from "./modules/users/user.entity";
       signOptions: { expiresIn: "7d" },
     }),
   ],
-  controllers: [AuthController, TransactionsController],
+  controllers: [AuthController, TransactionsController, CategoriesController],
   providers: [AuthService],
 })
 export class AppModule {}

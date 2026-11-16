@@ -540,3 +540,60 @@
     transition: none;
   }
 }
+.ui-date-field {
+  position: relative;
+}
+.ui-date-field .ui-input {
+  padding-right: 48px;
+}
+.ui-date-trigger {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #171717;
+}
+.ui-date-trigger:hover {
+  background: #fafaf8;
+}
+.ui-date-trigger:focus-visible {
+  outline: 3px solid #ddf45a;
+}
+
+.transaction-form {
+  display: grid;
+  gap: 16px;
+  margin-top: 24px;
+}
+.transaction-form .ui-error {
+  margin: 0;
+}
+.transaction-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.ui-spinner {
+  animation: ui-spin 0.8s linear infinite;
+}
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-spinner {
+    animation: none;
+  }
+}
+.ui-field > [data-slot="date-picker"] {
+  width: 100%;
+  max-width: none;
+}

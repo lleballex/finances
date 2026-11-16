@@ -23,3 +23,25 @@ test("недействительная сессия не обращается к
   await assert.rejects(new TransactionsController(auth, db).list({ headers: {} }, { page: 1, limit: 20, grouping: "day" }));
   assert.equal(queried, false);
 });
+
+test("создание ограничено владельцем и устанавливает знак по категории", async () => {
+  process.env.FRONTEND_ORIGIN = "http://localhost:3001";
+  let call;
+  const auth = { getUser: async () => ({ id: "owner-id" }) };
+  const db = { query: async (sql, params) => { call = { sql, params }; return [{ id: "created" }]; } };
+  const controller = new TransactionsController(auth, db);
+  const result = await controller.create({ headers: { origin: "http://localhost:3001", cookie: "session=signed" } }, { categoryId: "category-id", amount: "123.45", operationDate: "2026-11-16", accountingPeriod: "2026-11-01", isRegular: false });
+  assert.equal(result.id, "created");
+  assert.match(call.sql, /c\.user_id = \$2/);
+  assert.match(call.sql, /WHEN c\.type = 'expense' THEN -\$3::numeric/);
+  assert.equal(call.params[1], "owner-id");
+  assert.equal(call.params[2], "123.45");
+});
+
+test("создание отклоняет чужой origin до обращения к базе", async () => {
+  process.env.FRONTEND_ORIGIN = "http://localhost:3001";
+  let queried = false;
+  const controller = new TransactionsController({ getUser: async () => ({ id: "owner-id" }) }, { query: async () => { queried = true; return []; } });
+  await assert.rejects(controller.create({ headers: { origin: "https://example.com" } }, {}));
+  assert.equal(queried, false);
+});
