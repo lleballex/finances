@@ -8,3 +8,4 @@ export * from "./check-control";
 export * from "./switch-control";
 export * from "./card";
 export * from "./date-range-field";
+export * from "./collapsible-section";

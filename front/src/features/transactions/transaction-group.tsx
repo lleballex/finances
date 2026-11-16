@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  Collapsible,
-  CollapsiblePanel,
-  CollapsibleTrigger,
-} from "@ui-sdk/react/collapsible";
 import { ChevronDown, Repeat2 } from "lucide-react";
-import { ActionMenu } from "@/shared/ui";
+import { ActionMenu, CollapsibleSection } from "@/shared/ui";
 import type { Transaction } from "./types";
 
 const dateFormat = new Intl.DateTimeFormat("ru-RU", {
@@ -42,77 +37,81 @@ export function TransactionGroup({
 }) {
   const totalAmount = Number(total);
   return (
-    <Collapsible
+    <CollapsibleSection
       open={open}
       onOpenChange={onOpenChange}
       className="transaction-group"
-    >
-      <CollapsibleTrigger className="transaction-group-heading">
-        <ChevronDown
-          size={18}
-          className="transaction-chevron"
-          aria-hidden="true"
-        />
-        <strong>
-          {groupKey.length === 7 ? monthLabel(groupKey) : dateLabel(groupKey)}
-        </strong>
-        <span className={totalAmount > 0 ? "transaction-positive" : undefined}>
-          {money(totalAmount)}
-        </span>
-      </CollapsibleTrigger>
-      <CollapsiblePanel className="transaction-rows">
-        {items.map((item) => (
-          <div
-            className={`transaction-row${item.regular ? " is-regular" : ""}`}
-            key={item.id}
+      headingClassName="transaction-group-heading"
+      panelClassName="transaction-rows"
+      heading={
+        <>
+          <ChevronDown
+            size={18}
+            className="transaction-chevron"
+            aria-hidden="true"
+          />
+          <strong>
+            {groupKey.length === 7 ? monthLabel(groupKey) : dateLabel(groupKey)}
+          </strong>
+          <span
+            className={totalAmount > 0 ? "transaction-positive" : undefined}
           >
-            <span
-              className="transaction-category-icon"
-              style={{ background: item.color }}
-              aria-hidden="true"
-            >
-              {item.emoji}
-            </span>
-            <div className="transaction-row-main">
-              <strong>
-                {item.category}
-                {item.regular && (
-                  <span
-                    className="transaction-repeat"
-                    aria-label="Регулярная транзакция"
-                    title="Регулярная транзакция"
-                  >
-                    <Repeat2 size={12} aria-hidden="true" />
-                  </span>
-                )}
-              </strong>
-              <small>
-                {dateLabel(item.date)}{" "}
-                {item.period !== item.date.slice(0, 7) && (
-                  <span
-                    className="transaction-period"
-                    aria-label={`Учётный период: ${monthLabel(item.period)}`}
-                  >
-                    {monthLabel(item.period)}
-                  </span>
-                )}
-              </small>
-            </div>
-            <strong
-              className={`transaction-amount${Number(item.amount) > 0 ? " transaction-positive" : ""}`}
-            >
-              {money(Number(item.amount))}
+            {money(totalAmount)}
+          </span>
+        </>
+      }
+    >
+      {items.map((item) => (
+        <div
+          className={`transaction-row${item.regular ? " is-regular" : ""}`}
+          key={item.id}
+        >
+          <span
+            className="transaction-category-icon"
+            style={{ background: item.color }}
+            aria-hidden="true"
+          >
+            {item.emoji}
+          </span>
+          <div className="transaction-row-main">
+            <strong>
+              {item.category}
+              {item.regular && (
+                <span
+                  className="transaction-repeat"
+                  aria-label="Регулярная транзакция"
+                  title="Регулярная транзакция"
+                >
+                  <Repeat2 size={12} aria-hidden="true" />
+                </span>
+              )}
             </strong>
-            <ActionMenu
-              label={`Действия с транзакцией ${item.category} от ${dateLabel(item.date)}`}
-              options={[
-                { value: "edit", label: "Изменить", disabled: true },
-                { value: "delete", label: "Удалить", disabled: true },
-              ]}
-            />
+            <small>
+              {dateLabel(item.date)}{" "}
+              {item.period !== item.date.slice(0, 7) && (
+                <span
+                  className="transaction-period"
+                  aria-label={`Учётный период: ${monthLabel(item.period)}`}
+                >
+                  {monthLabel(item.period)}
+                </span>
+              )}
+            </small>
           </div>
-        ))}
-      </CollapsiblePanel>
-    </Collapsible>
+          <strong
+            className={`transaction-amount${Number(item.amount) > 0 ? " transaction-positive" : ""}`}
+          >
+            {money(Number(item.amount))}
+          </strong>
+          <ActionMenu
+            label={`Действия с транзакцией ${item.category} от ${dateLabel(item.date)}`}
+            options={[
+              { value: "edit", label: "Изменить", disabled: true },
+              { value: "delete", label: "Удалить", disabled: true },
+            ]}
+          />
+        </div>
+      ))}
+    </CollapsibleSection>
   );
 }
