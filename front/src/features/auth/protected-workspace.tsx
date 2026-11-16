@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { LoaderCircle } from "lucide-react";
 import { WorkspaceShell } from "@/features/workspace/workspace-shell";
 import { isWorkspaceSection } from "@/features/workspace/sections";
 import { API_URL, getSession, type SessionUser } from "./session";
@@ -58,7 +59,11 @@ export function ProtectedWorkspace({ children }: { children: ReactNode }) {
           role="status"
           aria-label="Проверка сессии"
         >
-          <span className="workspace-spinner" aria-hidden="true" />
+          <LoaderCircle
+            className="workspace-spinner"
+            size={32}
+            aria-hidden="true"
+          />
         </div>
       )}
     </WorkspaceShell>
