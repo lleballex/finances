@@ -7,3 +7,4 @@ export * from "./confirm-dialog";
 export * from "./check-control";
 export * from "./switch-control";
 export * from "./card";
+export * from "./date-range-field";
