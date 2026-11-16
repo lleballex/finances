@@ -21,6 +21,7 @@ import {
   Card,
   CheckControl,
   ConfirmDialog,
+  ColorField,
   SegmentedControl,
   SelectField,
   SwitchControl,
@@ -205,6 +206,8 @@ export default function Home() {
                   loading
                   options={options}
                 />
+                <ColorField label="Цвет" />
+                <ColorField label="Недоступный цвет" disabled />
                 <DateExample />
                 <MonthExample />
                 <DateRangeExample />

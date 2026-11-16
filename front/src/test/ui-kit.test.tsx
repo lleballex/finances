@@ -105,3 +105,21 @@ test("диалог закрывается отменой и возвращает
   );
   expect(document.activeElement).toBe(trigger);
 });
+
+test("цвет можно изменить в попапе и закрыть с клавиатуры", async () => {
+  render(<Home />);
+  const user = userEvent.setup();
+  const trigger = screen.getByRole("button", { name: "Цвет" });
+  await user.click(trigger);
+  const input = screen.getByRole("textbox", { name: "HEX цвет" });
+  await user.clear(input);
+  await user.type(input, "#123456{Enter}");
+  expect(trigger.textContent).toContain("#123456");
+  await user.keyboard("{Escape}");
+  expect(screen.queryByRole("textbox", { name: "HEX цвет" })).toBeNull();
+  expect(document.activeElement).toBe(trigger);
+  expect(
+    screen.getByRole<HTMLButtonElement>("button", { name: "Недоступный цвет" })
+      .disabled,
+  ).toBe(true);
+});

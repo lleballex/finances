@@ -12,3 +12,4 @@ export * from "./collapsible-section";
 export * from "./modal";
 export * from "./date-field";
 export * from "./month-field";
+export * from "./color-field";
