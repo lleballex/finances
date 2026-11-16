@@ -59,6 +59,9 @@
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 .workspace-nav-icon {
   display: inline-flex;
