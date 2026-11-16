@@ -105,16 +105,14 @@ test("редактирует и удаляет транзакцию с подт�
   };
   vi.stubGlobal(
     "fetch",
-    vi
-      .fn()
-      .mockResolvedValue({
-        ok: true,
-        json: async () => ({
-          data: [item],
-          meta: { page: 1, limit: 20, total: 1 },
-          groupTotals: { "2026-11-15": "-480.00" },
-        }),
+    vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        data: [item],
+        meta: { page: 1, limit: 20, total: 1 },
+        groupTotals: { "2026-11-15": "-480.00" },
       }),
+    }),
   );
   vi.spyOn(api, "get").mockResolvedValue({ data: [category] });
   const put = vi.spyOn(api, "put").mockResolvedValue({ data: {} });
