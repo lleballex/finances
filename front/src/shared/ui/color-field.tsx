@@ -60,7 +60,7 @@ export function ColorField({
         </PopoverTrigger>
         <PopoverContent
           className="ui-date-range-popup ui-color-popup"
-          align="start"
+          align="center"
           sideOffset={8}
         >
           <PopoverTitle className="ui-color-title">{label}</PopoverTitle>
