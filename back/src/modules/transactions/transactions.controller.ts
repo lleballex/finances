@@ -67,22 +67,27 @@ export class TransactionsController {
       .find((part) => part.startsWith("session="))
       ?.slice(8);
     const user = await this.auth.getUser(token);
-    const rows = await this.db.query(
-      `INSERT INTO "transaction" (category_id, amount, operation_date, accounting_period, description, is_regular)
+    return this.db.transaction(async (db) => {
+      await db.query("SELECT pg_advisory_xact_lock(hashtextextended($1, 0))", [
+        user.id,
+      ]);
+      const rows = await db.query(
+        `INSERT INTO "transaction" (category_id, amount, operation_date, accounting_period, description, is_regular)
       SELECT c.id, CASE WHEN c.type = 'expense' THEN -$3::numeric ELSE $3::numeric END, $4::date, $5::date, $6, COALESCE($7::boolean, c.is_regular)
       FROM category c WHERE c.id = $1 AND c.user_id = $2 RETURNING id`,
-      [
-        input.categoryId,
-        user.id,
-        input.amount,
-        input.operationDate,
-        input.accountingPeriod,
-        input.description?.trim() || null,
-        input.isRegular ?? null,
-      ],
-    );
-    if (!rows.length) throw new BadRequestException("Категория недоступна");
-    return { id: rows[0].id };
+        [
+          input.categoryId,
+          user.id,
+          input.amount,
+          input.operationDate,
+          input.accountingPeriod,
+          input.description?.trim() || null,
+          input.isRegular ?? null,
+        ],
+      );
+      if (!rows.length) throw new BadRequestException("Категория недоступна");
+      return { id: rows[0].id };
+    });
   }
 
   @Get()

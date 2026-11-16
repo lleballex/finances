@@ -28,7 +28,7 @@ test("создание ограничено владельцем и устана
   process.env.FRONTEND_ORIGIN = "http://localhost:3001";
   let call;
   const auth = { getUser: async () => ({ id: "owner-id" }) };
-  const db = { query: async (sql, params) => { call = { sql, params }; return [{ id: "created" }]; } };
+  const db = { transaction: async (fn) => fn({ query: async (sql, params) => { if (sql.includes("INSERT")) { call = { sql, params }; return [{ id: "created" }]; } return []; } }) };
   const controller = new TransactionsController(auth, db);
   const result = await controller.create({ headers: { origin: "http://localhost:3001", cookie: "session=signed" } }, { categoryId: "category-id", amount: "123.45", operationDate: "2026-11-16", accountingPeriod: "2026-11-01", isRegular: false });
   assert.equal(result.id, "created");

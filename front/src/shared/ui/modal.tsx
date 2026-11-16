@@ -20,14 +20,16 @@ export function Modal({
   open: boolean;
   onOpenChange: (open: boolean) => void;
   title: string;
-  trigger: ReactNode;
+  trigger?: ReactNode;
   children: ReactNode;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger className="ui-button ui-button--primary">
-        {trigger}
-      </DialogTrigger>
+      {trigger && (
+        <DialogTrigger className="ui-button ui-button--primary">
+          {trigger}
+        </DialogTrigger>
+      )}
       <DialogBackdrop className="ui-dialog-backdrop" />
       <DialogContent className="ui-dialog">
         <DialogClose
